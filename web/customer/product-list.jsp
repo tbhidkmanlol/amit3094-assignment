@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<!-- Header copied from home.jsp -->
 <header>
     <div class="left-section">
         <div class="logo">
@@ -28,17 +27,7 @@
     </nav>
 </header>
 
-<!-- Main page content -->
-<div class="mainpage">
-    <h2>Product List</h2>
-    <!-- Example product -->
-    <div class="product">
-        <h3>Awesome Gadget</h3>
-        <p>Only RM99.99</p>
-    </div>
-</div>
 
-<!-- Footer copied from home.jsp -->
 <footer>
     <p>© 2025 PocketGadget. All rights reserved.</p>
 </footer>
