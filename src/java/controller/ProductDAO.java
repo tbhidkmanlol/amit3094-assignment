@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO {
-    // Remove the dataSource field and replace with database connection properties
 
     private String dbUrl = "jdbc:derby://localhost:1527/PocketGadgetDB;create=true";
     private String dbUser = "app";
@@ -34,22 +33,6 @@ public class ProductDAO {
         return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    private void closeResources(Connection conn, Statement stmt, ResultSet rs) {
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stmt != null) {
-                stmt.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         Connection conn = null;
@@ -59,7 +42,7 @@ public class ProductDAO {
         try {
             conn = getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM products WHERE category = 'Tech Gadgets & Accessories'");
+            rs = stmt.executeQuery("SELECT * FROM products");
 
             while (rs.next()) {
                 Product product = mapResultSetToProduct(rs);
@@ -67,8 +50,6 @@ public class ProductDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResources(conn, stmt, rs);
         }
         System.out.println("Found " + products.size() + " products");
         return products;
@@ -92,8 +73,6 @@ public class ProductDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResources(conn, stmt, rs);
         }
 
         return product;
@@ -108,7 +87,7 @@ public class ProductDAO {
         try {
             conn = getConnection();
             // Search by name or ID (if the keyword is a number)
-            String sql = "SELECT * FROM products WHERE category = 'Tech Gadgets & Accessories' AND "
+            String sql = "SELECT * FROM products WHERE "
                     + "(LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))";
 
             // If the keyword can be parsed as an integer, also search by ID
@@ -134,10 +113,7 @@ public class ProductDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeResources(conn, stmt, rs);
         }
-
         return products;
     }
 
@@ -153,54 +129,4 @@ public class ProductDAO {
         return product;
     }
 
-    // Method to initialize the database with sample data
-    public void initializeDatabase() {
-        Connection conn = null;
-        Statement stmt = null;
-
-        try {
-            conn = getConnection();
-            stmt = conn.createStatement();
-
-            // Check if products table exists
-            try {
-                stmt.executeQuery("SELECT COUNT(*) FROM products");
-            } catch (SQLException e) {
-                // Table doesn't exist, create it
-                stmt.executeUpdate("CREATE TABLE products ("
-                        + "id INT PRIMARY KEY, "
-                        + "name VARCHAR(255), "
-                        + "description VARCHAR(1000), "
-                        + "price DOUBLE, "
-                        + "category VARCHAR(100), "
-                        + "image_url VARCHAR(255), "
-                        + "stock_quantity INT)");
-
-                // Insert sample data
-                insertSampleData(conn);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeResources(conn, stmt, null);
-        }
-    }
-
-    private void insertSampleData(Connection conn) throws SQLException {
-        String[] insertStatements = {
-            "INSERT INTO products VALUES (1, 'Wireless Bluetooth Earbuds', 'High-quality wireless earbuds with noise cancellation', 79.99, 'Tech Gadgets & Accessories', 'images/earbuds.jpg', 50)",
-            "INSERT INTO products VALUES (2, 'Smart Watch', 'Fitness tracking smart watch with heart rate monitor', 129.99, 'Tech Gadgets & Accessories', 'images/smartwatch.jpg', 30)",
-            "INSERT INTO products VALUES (3, 'Portable Power Bank', '20000mAh fast charging power bank with USB-C', 49.99, 'Tech Gadgets & Accessories', 'images/powerbank.jpg', 100)",
-            "INSERT INTO products VALUES (4, 'Bluetooth Speaker', 'Waterproof portable Bluetooth speaker', 69.99, 'Tech Gadgets & Accessories', 'images/speaker.jpg', 40)",
-            "INSERT INTO products VALUES (5, 'Wireless Mouse', 'Ergonomic wireless mouse with adjustable DPI', 29.99, 'Tech Gadgets & Accessories', 'images/mouse.jpg', 75)",
-            "INSERT INTO products VALUES (6, 'Laptop Stand', 'Adjustable aluminum laptop stand', 35.99, 'Tech Gadgets & Accessories', 'images/laptopstand.jpg', 60)",
-            "INSERT INTO products VALUES (7, 'Phone Gimbal', 'Smartphone stabilizer for smooth video recording', 89.99, 'Tech Gadgets & Accessories', 'images/gimbal.jpg', 25)",
-            "INSERT INTO products VALUES (8, 'USB-C Hub', '7-in-1 USB-C hub with HDMI and card readers', 45.99, 'Tech Gadgets & Accessories', 'images/usbhub.jpg', 50)"
-        };
-
-        Statement stmt = conn.createStatement();
-        for (String sql : insertStatements) {
-            stmt.executeUpdate(sql);
-        }
-    }
 }
