@@ -429,12 +429,12 @@ footer {
     .product-detail {
         flex-direction: column;
     }
-    
+
     .product-detail-left,
     .product-detail-right {
         width: 100%;
     }
-    
+
     .product-detail-right {
         border-left: none;
         border-top: 1px solid #eee;
@@ -445,43 +445,43 @@ footer {
     header {
         flex-direction: column;
     }
-    
+
     .header-right {
         margin-top: 15px;
     }
-    
+
     .search-box {
         margin-right: 0;
         margin-bottom: 10px;
     }
-    
+
     .search-box input[type="text"] {
         width: 180px;
     }
-    
+
     .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
-    
+
     .cart-table thead {
         display: none;
     }
-    
-    .cart-table, 
-    .cart-table tbody, 
-    .cart-table tr, 
+
+    .cart-table,
+    .cart-table tbody,
+    .cart-table tr,
     .cart-table td {
         display: block;
         width: 100%;
     }
-    
+
     .cart-table tr {
         margin-bottom: 20px;
         border: 1px solid #eee;
         border-radius: 8px;
         overflow: hidden;
     }
-    
+
     .cart-table td {
         display: flex;
         justify-content: space-between;
@@ -490,23 +490,23 @@ footer {
         text-align: right;
         position: relative;
     }
-    
+
     .cart-table td::before {
         content: attr(data-label);
         font-weight: bold;
         position: absolute;
         left: 15px;
     }
-    
+
     .cart-product-info {
         width: 100%;
         justify-content: flex-end;
     }
-    
+
     .cart-actions {
         flex-direction: column;
     }
-    
+
     .continue-shopping {
         margin-bottom: 10px;
     }
@@ -542,4 +542,53 @@ footer {
     color: white;
     border-radius: 4px;
     font-weight: bold;
+}
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.cart-table th, .cart-table td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.remove-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.continue-shopping, .checkout-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.continue-shopping {
+    background-color: #6c757d;
+    color: white;
+}
+
+.checkout-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
 }

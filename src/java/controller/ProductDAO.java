@@ -1,132 +1,76 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controller;
 
+import controller.DBConnection;
 import entity.Product;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class ProductDAO {
 
-    private String dbUrl = "jdbc:derby://localhost:1527/PocketGadgetDB;create=true";
-    private String dbUser = "app";
-    private String dbPassword = "app";
-
-    public ProductDAO() {
-        try {
-            // Load the JDBC driver
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error loading database driver", e);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-    }
-
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        System.out.println("Getting all products"); //debug
-        try {
-            conn = getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM products");
+        System.out.println("DEBUG: Attempting database connection");
+
+        try (Connection conn = DBConnection.getConnection()) {
+            System.out.println("DEBUG: Connection successful!");
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT id, name, price, image FROM product");
 
             while (rs.next()) {
-                Product product = mapResultSetToProduct(rs);
-                products.add(product);
+                Product p = new Product();
+                p.setId(rs.getInt("id"));
+                p.setName(rs.getString("name"));
+                p.setPrice(rs.getDouble("price"));
+                p.setImage(rs.getString("image"));
+                products.add(p);
+                System.out.println("DEBUG: Loaded product - " + p.getName());
+            }
+
+            System.out.println("DEBUG: Total products loaded: " + products.size());
+            if (products.isEmpty()) {
+                System.out.println("WARNING: No products found in database!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Found " + products.size() + " products");
-        return products;
-
-    }
-
-    public Product getProductById(int id) {
-        Product product = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM products WHERE id = ?");
-            stmt.setInt(1, id);
-            rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                product = mapResultSetToProduct(rs);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return product;
-    }
-
-    public List<Product> searchProducts(String keyword) {
-        List<Product> products = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = getConnection();
-            // Search by name or ID (if the keyword is a number)
-            String sql = "SELECT * FROM products WHERE "
-                    + "(LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))";
-
-            // If the keyword can be parsed as an integer, also search by ID
-            try {
-                int id = Integer.parseInt(keyword);
-                sql += " OR id = ?)";
-                stmt = conn.prepareStatement(sql);
-                stmt.setString(1, "%" + keyword + "%");
-                stmt.setString(2, "%" + keyword + "%");
-                stmt.setInt(3, id);
-            } catch (NumberFormatException e) {
-                sql += ")";
-                stmt = conn.prepareStatement(sql);
-                stmt.setString(1, "%" + keyword + "%");
-                stmt.setString(2, "%" + keyword + "%");
-            }
-
-            rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Product product = mapResultSetToProduct(rs);
-                products.add(product);
-            }
-        } catch (SQLException e) {
+            System.err.println("FATAL DATABASE ERROR:");
+            System.err.println("Message: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("Error Code: " + e.getErrorCode());
             e.printStackTrace();
         }
         return products;
     }
 
-    private Product mapResultSetToProduct(ResultSet rs) throws SQLException {
-        Product product = new Product();
-        product.setId(rs.getInt("id"));
-        product.setName(rs.getString("name"));
-        product.setDescription(rs.getString("description"));
-        product.setPrice(rs.getDouble("price"));
-        product.setCategory(rs.getString("category"));
-        product.setImageUrl(rs.getString("image_url"));
-        product.setStockQuantity(rs.getInt("stock_quantity"));
-        return product;
+    public Product getProductById(int productId) {
+        String sql = "SELECT id, name, price, image FROM product WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Product product = new Product();
+                    product.setId(rs.getInt("id"));
+                    product.setName(rs.getString("name"));
+                    product.setPrice(rs.getDouble("price"));
+                    product.setImage(rs.getString("image"));
+                    return product;
+                }
+            }
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+        return null;
+    }
+
+    private void handleSQLException(SQLException e) {
+        System.err.println("SQL Error: " + e.getMessage());
+        System.err.println("SQL State: " + e.getSQLState());
+        System.err.println("Error Code: " + e.getErrorCode());
     }
 
 }

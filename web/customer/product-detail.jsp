@@ -7,9 +7,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>PocketGadget</title>
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-        <link rel="stylesheet" href="../home.css" />
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
@@ -40,6 +37,12 @@
                         </a>
                     </div>
                 </div>
+                <nav class="navbar">
+                    <ul>
+                        <li><a href="${pageContext.request.contextPath}/products">Products</a></li>
+                        <li><a href="${pageContext.request.contextPath}/cart">Cart (${sessionScope.cart.itemCount})</a></li>
+                    </ul>
+                </nav>
             </header>
 
             <main>
@@ -57,18 +60,6 @@
 
                         <div class="product-description">
                             <h3>Description</h3>
-                            <p>${product.description}</p>
-                        </div>
-
-                        <div class="product-stock">
-                            <c:choose>
-                                <c:when test="${product.stockQuantity > 0}">
-                                    <p class="in-stock">In Stock (${product.stockQuantity} available)</p>
-                                </c:when>
-                                <c:otherwise>
-                                    <p class="out-of-stock">Out of Stock</p>
-                                </c:otherwise>
-                            </c:choose>
                         </div>
 
                         <div class="product-actions">
@@ -78,7 +69,7 @@
 
                                 <div class="quantity-selector">
                                     <label for="quantity">Quantity:</label>
-                                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="${product.stockQuantity}">
+                                    <input type="number" id="quantity" name="quantity" value="1" min="1">
                                 </div>
 
                                 <button type="submit" class="add-to-cart-btn" ${product.stockQuantity <= 0 ? 'disabled' : ''}>
