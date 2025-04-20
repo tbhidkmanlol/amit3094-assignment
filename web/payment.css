@@ -1,0 +1,155 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: #000; /* Same as homepage */
+    color: #fff;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+    margin-top: 30px; /* Move it down */
+}
+
+/* Payment Wrapper */
+.payment-wrapper {
+    display: flex;
+    max-width: 1000px;
+    width: 100%;
+    gap: 30px;
+    background-color: #111;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(255, 0, 247, 0.2), 0 0 40px rgba(255, 69, 0, 0.25);
+    padding: 30px;
+}
+
+/* Left Section */
+.payment-container {
+    flex: 2;
+}
+
+/* Order Summary Section */
+.order-summary {
+    flex: 1;
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 0 15px rgba(255, 0, 247, 0.3);
+}
+
+/* Headings */
+h2, h3 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Form Labels */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Billing Address Layout */
+.billing-address-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Two columns */
+    grid-template-rows: auto auto;   /* Two rows */
+    gap: 10px;  /* Space between inputs */
+}
+
+/* Shorter Inputs */
+.billing-address-grid input {
+    width: 80%;  /* Make the input fields shorter */
+    
+}
+
+/* Inputs & Selects */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    background-color: #191919;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    box-sizing: border-box;
+    text-shadow: 0 0 4px #ff00f7;
+    transition: 0.3s ease;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #aaa;
+}
+
+/* Textarea Styling */
+textarea {
+    resize: none;
+    height: 80px;
+}
+
+/* Submit Button & Pay Button */
+input[type="submit"], .summary-button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    text-shadow: 0 0 5px #fff;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover, .summary-button:hover {
+    background-color: blue;
+}
+
+/* Card Details Transition */
+#cardDetails {
+    transition: all 0.3s ease;
+}
+
+/* Summary Item Styling */
+.summary-item {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+/* Order Summary Input */
+.order-summary input[type="text"] {
+    margin-bottom: 15px;
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Coupon Apply Button Style */
+.order-summary button {
+    background-color: blue;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.order-summary button:hover {
+    background-color: blue;
+    
+}
