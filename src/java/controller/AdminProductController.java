@@ -17,11 +17,11 @@ public class AdminProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Keep a reference to the Images directory for fallback
+        // Reference to Images directory for fallback only
         String uploadPath = getServletContext().getRealPath("/Images");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
-            uploadDir.mkdirs(); // Create Images folder if it doesn't exist
+            uploadDir.mkdirs();
         }
 
         try {
@@ -30,7 +30,16 @@ public class AdminProductController extends HttpServlet {
             double price = Double.parseDouble(request.getParameter("price"));
             int quantity = Integer.parseInt(request.getParameter("quantity"));
             String description = request.getParameter("description");
+            String category = request.getParameter("category");
             Part filePart = request.getPart("image");
+            
+            // Handle custom category if selected
+            if ("Other".equals(category)) {
+                String customCategory = request.getParameter("customCategory");
+                if (customCategory != null && !customCategory.trim().isEmpty()) {
+                    category = customCategory;
+                }
+            }
 
             // Validate form inputs
             if (name == null || name.trim().isEmpty()) {
@@ -41,6 +50,13 @@ public class AdminProductController extends HttpServlet {
             }
             if (quantity < 0) {
                 throw new Exception("Quantity cannot be negative");
+            }
+            
+            // Format description to include category (if not already there)
+            if (description == null || description.trim().isEmpty()) {
+                description = category; // Use category as description if none provided
+            } else if (!description.toLowerCase().contains(category.toLowerCase())) {
+                description = category + " - " + description;
             }
 
             // Initialize product object
@@ -54,33 +70,27 @@ public class AdminProductController extends HttpServlet {
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                 
-                // Store image in database
+                // Store image in database - PRIMARY METHOD
                 int imageId = ImageDAO.storeImage(filePart.getInputStream(), fileName);
                 
                 if (imageId > 0) {
-                    // Set the image path to our image servlet URL
+                    // Set the image path to our servlet URL format
                     product.setImage("image/" + imageId);
-                    System.out.println("Image stored in database with ID: " + imageId);
+                    System.out.println("Image successfully stored in database with ID: " + imageId);
                 } else {
-                    // Fallback to file system if database storage failed
-                    System.out.println("Database storage failed, falling back to file system");
+                    // Fallback to filesystem ONLY if database storage fails
+                    System.err.println("WARNING: Database storage failed, falling back to filesystem");
                     String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.\\-]", "_");
                     String uniqueFileName = System.currentTimeMillis() + "_" + safeFileName;
                     
-                    File targetFile = new File(uploadDir, uniqueFileName);
-                    try (InputStream input = filePart.getInputStream();
-                         FileOutputStream output = new FileOutputStream(targetFile)) {
-                        byte[] buffer = new byte[1024];
-                        int length;
-                        while ((length = input.read(buffer)) > 0) {
-                            output.write(buffer, 0, length);
-                        }
-                    }
-                    
+                    // Reset the input stream for the second attempt
+                    filePart.write(uploadPath + File.separator + uniqueFileName);
                     product.setImage("Images/" + uniqueFileName);
+                    System.out.println("Image saved to filesystem as fallback: " + uniqueFileName);
                 }
             } else {
-                product.setImage("Images/default.jpg"); // Fallback to default image
+                product.setImage("Images/default.jpg"); // Default image
+                System.out.println("No image provided, using default image");
             }
 
             // Save product using DAO
@@ -91,6 +101,7 @@ public class AdminProductController extends HttpServlet {
             request.getSession().setAttribute("adminMessage", "Product added successfully!");
 
         } catch (Exception e) {
+            e.printStackTrace(); // Log the full stack trace
             request.getSession().setAttribute("adminError", "Error: " + e.getMessage());
         }
 

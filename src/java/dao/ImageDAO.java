@@ -7,6 +7,46 @@ import model.DBConnection;
 
 public class ImageDAO {
     
+    static {
+        // Try to create the table when the class is loaded
+        initializeTable();
+    }
+    
+    /**
+     * Initialize the image storage table in the database if it doesn't exist
+     */
+    private static void initializeTable() {
+        try (Connection conn = DBConnection.getConnection()) {
+            // Check if table exists
+            DatabaseMetaData dbm = conn.getMetaData();
+            ResultSet tables = dbm.getTables(null, "NBUSER", "PRODUCT_IMAGES", null);
+            
+            if (!tables.next()) {
+                // Table doesn't exist, create it
+                System.out.println("Creating PRODUCT_IMAGES table in database");
+                
+                try (Statement stmt = conn.createStatement()) {
+                    String createTableSQL = 
+                        "CREATE TABLE NBUSER.PRODUCT_IMAGES (" +
+                        "IMAGE_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                        "IMAGE_NAME VARCHAR(255), " +
+                        "IMAGE_DATA BLOB, " +
+                        "UPLOAD_DATE TIMESTAMP, " +
+                        "PRIMARY KEY (IMAGE_ID))";
+                    
+                    stmt.executeUpdate(createTableSQL);
+                    System.out.println("PRODUCT_IMAGES table created successfully");
+                }
+            } else {
+                System.out.println("PRODUCT_IMAGES table already exists");
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error initializing PRODUCT_IMAGES table:");
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Stores an image in the database and returns the assigned image ID
      * 

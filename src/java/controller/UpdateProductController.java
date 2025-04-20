@@ -24,7 +24,7 @@ public class UpdateProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Reference to image directory for fallback
+        // Reference to image directory for fallback only
         String uploadPath = getServletContext().getRealPath("/Images");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
@@ -83,14 +83,16 @@ public class UpdateProductController extends HttpServlet {
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                 
-                // Try to store in database first
+                // Store image in database - PRIMARY STORAGE METHOD
                 int imageId = ImageDAO.storeImage(filePart.getInputStream(), fileName);
                 
                 if (imageId > 0) {
                     // Set the image path to our image servlet URL
                     product.setImage("image/" + imageId);
+                    System.out.println("Image stored in database with ID: " + imageId);
                 } else {
                     // Fallback to file system if database storage failed
+                    System.err.println("WARNING: Database storage failed, falling back to filesystem");
                     String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.\\-]", "_");
                     String uniqueFileName = System.currentTimeMillis() + "_" + safeFileName;
                     
@@ -105,8 +107,10 @@ public class UpdateProductController extends HttpServlet {
                     }
                     
                     product.setImage("Images/" + uniqueFileName);
+                    System.out.println("Image saved to filesystem as fallback: " + uniqueFileName);
                 }
             }
+            // Note: If no new image is provided, we keep the existing image path in the product object
             
             // Update the product in the database
             boolean success = ProductDAO.updateProduct(product);
@@ -120,6 +124,7 @@ public class UpdateProductController extends HttpServlet {
         } catch (NumberFormatException e) {
             request.getSession().setAttribute("adminError", "Invalid number format");
         } catch (Exception e) {
+            e.printStackTrace(); // Log full stack trace
             request.getSession().setAttribute("adminError", "Error: " + e.getMessage());
         }
         

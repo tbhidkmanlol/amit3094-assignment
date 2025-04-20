@@ -1,6 +1,7 @@
 package controller;
 
 import dao.ProductDAO;
+import dao.ImageDAO;
 import model.Product;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.*;
@@ -15,8 +16,8 @@ public class AddProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Create uploads directory if it doesn't exist
-        String uploadPath = getServletContext().getRealPath("") + File.separator + "images";
+        // Keep Images directory for fallback only
+        String uploadPath = getServletContext().getRealPath("") + File.separator + "Images";
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdir();
 
@@ -43,11 +44,6 @@ public class AddProductController extends HttpServlet {
                 throw new Exception("Invalid product data");
             }
 
-            // Save image
-            String fileName = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString();
-            String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
-            imagePart.write(uploadPath + File.separator + uniqueFileName);
-
             // Format description to include category (if not already there)
             if (description == null || description.trim().isEmpty()) {
                 description = category; // Use category as description if none provided
@@ -56,13 +52,37 @@ public class AddProductController extends HttpServlet {
                 description = category + " - " + description;
             }
 
-            // Create and save product
+            // Create product object
             Product product = new Product();
             product.setName(name);
             product.setPrice(price);
             product.setQuantity(quantity);
             product.setDescription(description);
-            product.setImage("images/" + uniqueFileName);
+            
+            // Process image upload if provided
+            if (imagePart != null && imagePart.getSize() > 0) {
+                String fileName = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString();
+                
+                // Store image in database - PRIMARY STORAGE METHOD
+                int imageId = ImageDAO.storeImage(imagePart.getInputStream(), fileName);
+                
+                if (imageId > 0) {
+                    // Set the image path to our image servlet URL
+                    product.setImage("image/" + imageId);
+                    System.out.println("Image stored in database with ID: " + imageId);
+                } else {
+                    // Fallback to file system ONLY if database storage fails
+                    System.err.println("WARNING: Database storage failed, falling back to filesystem");
+                    String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.\\-]", "_");
+                    String uniqueFileName = System.currentTimeMillis() + "_" + safeFileName;
+                    
+                    imagePart.write(uploadPath + File.separator + uniqueFileName);
+                    product.setImage("Images/" + uniqueFileName);
+                    System.out.println("Image saved to filesystem as fallback: " + uniqueFileName);
+                }
+            } else {
+                product.setImage("Images/default.jpg"); // Fallback to default image
+            }
             
             if (!ProductDAO.addProduct(product)) {
                 throw new Exception("Database error");
@@ -73,6 +93,7 @@ public class AddProductController extends HttpServlet {
             
         } catch (Exception e) {
             request.getSession().setAttribute("adminError", "Error: " + e.getMessage());
+            e.printStackTrace(); // Log full stack trace
         }
         
         // Redirect back to admin product page
