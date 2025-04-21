@@ -22,10 +22,12 @@
         <header class="header" data-theme-target="header">
             <div class="left-section">
                 <div class="logo">
-                    <img src="Images/logo.png" alt="Logo" />
+                    <a href="home.jsp" style="display: block;">
+                        <img src="Images/logo.png" alt="Logo" />
+                    </a>
                 </div>
                 <div class="brand">
-                    <h1>PocketGadget</h1>
+                    <h1><a href="home.jsp" style="text-decoration: none; color: inherit;">PocketGadget</a></h1>
                 </div>
             </div>
 

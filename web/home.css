@@ -676,3 +676,76 @@ html.light-theme .navbar a:hover {
   text-shadow: 0 0 5px #ff0000, 0 0 10px #ff4500;
 }
 
+/* Account Dropdown Menu */
+.account-dropdown {
+  position: relative;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 220px;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 70, 70, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+  z-index: 100;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transform: translateY(10px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+html.light-theme .dropdown-content {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 70, 70, 0.3);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.account-dropdown:hover .dropdown-content {
+  display: block;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.dropdown-content a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  padding: 12px 16px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 70, 70, 0.2);
+}
+
+.dropdown-content a:last-child {
+  border-bottom: none;
+}
+
+.dropdown-content a:hover {
+  background: rgba(255, 0, 0, 0.2);
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+
+.dropdown-content a i {
+  font-size: 18px;
+}
+
+.logout-link {
+  color: #ff4500 !important;
+}
+
+.logout-link:hover {
+  background: rgba(255, 0, 0, 0.3) !important;
+}
+

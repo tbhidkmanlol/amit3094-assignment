@@ -55,7 +55,7 @@ body {
     align-items: center;
     overflow-x: hidden;
     position: relative;
-    background-image: url('Images/HomeBackground.jpg');
+    /* Removing the MP4 background image as it's not supported */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

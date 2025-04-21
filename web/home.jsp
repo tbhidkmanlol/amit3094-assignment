@@ -14,10 +14,12 @@
   <header class="header" data-theme-target="header">
     <div class="left-section">
       <div class="logo">
-        <img src="Images/logo.png" alt="Logo" />
+        <a href="home.jsp" style="display: block;">
+          <img src="Images/logo.png" alt="Logo" />
+        </a>
       </div>
       <div class="brand">
-        <h1>PocketGadget</h1>
+        <h1><a href="home.jsp" style="text-decoration: none; color: inherit;">PocketGadget</a></h1>
       </div>
     </div>
 
@@ -27,8 +29,44 @@
         <li><a href="#">Cart</a></li>
         <li><a href="#">About Us</a></li>
         <li><a href="#">Contact Us</a></li>
-        <li><a href="#">Login / Register</a></li>
-        <li><a href="#">Account</a></li>
+        
+        <!-- Account Dropdown - Changes based on login status -->
+        <li class="account-dropdown">
+          <% if (session.getAttribute("user") != null) { 
+               String username = (String)session.getAttribute("username");
+               String role = (String)session.getAttribute("role");
+          %>
+            <a href="#" class="dropdown-trigger">
+              <i class="bx bx-user-circle"></i> Welcome, <%= username %> <i class="bx bx-chevron-down"></i>
+            </a>
+            <div class="dropdown-content">
+              <% if ("ADMIN".equals(role)) { %>
+                <a href="home.jsp"><i class="bx bx-home"></i> Home</a>
+                <a href="admin/dashboard.jsp"><i class="bx bx-tachometer"></i> Admin Dashboard</a>
+                <a href="admin/dashboard.jsp?section=settings"><i class="bx bx-cog"></i> Settings</a>
+              <% } else if ("MANAGER".equals(role)) { %>
+                <a href="home.jsp"><i class="bx bx-home"></i> Home</a>
+                <a href="manager/dashboard.jsp"><i class="bx bx-tachometer"></i> Manager Dashboard</a>
+                <a href="manager/dashboard.jsp?section=settings"><i class="bx bx-cog"></i> Settings</a>
+              <% } else { %>
+                <a href="home.jsp"><i class="bx bx-home"></i> Home</a>
+                <a href="customer/dashboard.jsp"><i class="bx bx-user"></i> My Account</a>
+                <a href="#"><i class="bx bx-package"></i> My Orders</a>
+                <a href="customer/dashboard.jsp?section=settings"><i class="bx bx-cog"></i> Settings</a>
+              <% } %>
+              <a href="auth/logout" class="logout-link"><i class="bx bx-log-out"></i> Sign Out</a>
+            </div>
+          <% } else { %>
+            <a href="#" class="dropdown-trigger">
+              <i class="bx bx-user"></i> Account <i class="bx bx-chevron-down"></i>
+            </a>
+            <div class="dropdown-content">
+              <a href="login.jsp"><i class="bx bx-log-in"></i> Login</a>
+              <a href="login.jsp#register"><i class="bx bx-user-plus"></i> Register</a>
+            </div>
+          <% } %>
+        </li>
+        
         <li><a href="#"><i class="bx bx-search"></i></a></li>
         <li>
           <button id="theme-toggle" class="theme-toggle">
@@ -221,5 +259,22 @@
   </footer>
 
 </div>
+
+<!-- Script for Register tab selection -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if URL contains #register and redirect to login page with register tab active
+    const registerLinks = document.querySelectorAll('a[href="login.jsp#register"]');
+    registerLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'login.jsp#register';
+        
+        // Store a flag to switch to register tab when the page loads
+        sessionStorage.setItem('showRegisterTab', 'true');
+      });
+    });
+  });
+</script>
 </body>
 </html>

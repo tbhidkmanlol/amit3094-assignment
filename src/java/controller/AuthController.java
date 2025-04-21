@@ -37,12 +37,27 @@ public class AuthController extends HttpServlet {
                     // PROPERLY DECLARE username and password first
                     String username = request.getParameter("username");
                     String password = request.getParameter("password");
+                    String redirectParam = request.getParameter("redirect");
 
                     User user = userDao.authenticate(username, password);
 
                     if (user != null) {
                         HttpSession session = request.getSession();
                         session.setAttribute("user", user);
+                        session.setAttribute("username", user.getUsername());
+                        session.setAttribute("role", user.getRole());
+                        
+                        // Always redirect to home.jsp after successful login
+                        response.sendRedirect(request.getContextPath() + "/home.jsp");
+                        return;
+                        
+                        // Original redirection logic commented out
+                        /*
+                        // Check if redirect parameter exists from the form
+                        if (redirectParam != null && !redirectParam.isEmpty()) {
+                            response.sendRedirect(request.getContextPath() + "/" + redirectParam);
+                            return;
+                        }
                         
                         // Check if there's a redirect destination after login
                         String redirectDestination = (String) session.getAttribute("redirectAfterLogin");
@@ -63,6 +78,7 @@ public class AuthController extends HttpServlet {
                             default:
                                 response.sendRedirect("../customer/dashboard.jsp");
                         }
+                        */
                     } else {
                         response.sendRedirect("../login.jsp?error=1");
                     }

@@ -17,10 +17,12 @@
         <header class="header" data-theme-target="header">
             <div class="left-section">
                 <div class="logo">
-                    <img src="Images/logo.png" alt="Logo" />
+                    <a href="home.jsp" style="display: block;">
+                        <img src="Images/logo.png" alt="Logo" />
+                    </a>
                 </div>
                 <div class="brand">
-                    <h1>PocketGadget</h1>
+                    <h1><a href="home.jsp" style="text-decoration: none; color: inherit;">PocketGadget</a></h1>
                 </div>
             </div>
 
@@ -30,7 +32,7 @@
                     <li><a href="cart.jsp">Cart</a></li>
                     <li><a href="#">About Us</a></li>
                     <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">Login / Register</a></li>
+                    <li><a href="login.jsp">Login / Register</a></li>
                     <li><a href="#">Account</a></li>
                     <li><a href="#"><i class="bx bx-search"></i></a></li>
                     <li>
@@ -49,10 +51,14 @@
                 <div class="search-container">
                     <form method="get" action="ProductSearchController">
                         <input type="text" name="searchTerm" placeholder="Search by ID or Name...">
-                        <button type="submit" class="search-btn">Search</button>
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i> Search
+                        </button>
                     </form>
                 </div>
-                <a href="cart.jsp" class="cart-link">Check Cart</a>
+                <a href="cart.jsp" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i> Check Cart
+                </a>
             </div>
 
             <% if (request.getParameter("searchTerm") != null && !request.getParameter("searchTerm").isEmpty()) { %>
@@ -133,7 +139,6 @@
                                    value="1" class="quantity-input">
                             <button type="submit" class="add-to-cart">Add to Cart</button>
                         </form>
-                        <a href="ProductDetails.jsp?id=<%= p.getId() %>" class="view-reviews-btn">View Reviews</a>
                     </div>
                 </div>
                 <% } %>
