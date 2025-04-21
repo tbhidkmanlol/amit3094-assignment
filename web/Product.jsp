@@ -1,14 +1,50 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List, model.Product"%>
 <!DOCTYPE html>
-<html>
+<html class="dark-theme">
     <head>
-        <title>Product List - Phone Accessories</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Product List - PocketGadget</title>
         <link rel="stylesheet" href="Product.css">
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <script src="theme.js" defer></script>
     </head>
     <body>
-        <div class="container">
-            <div class="header">
+        <!-- Header Section with theme-specific data attribute -->
+        <header class="header" data-theme-target="header">
+            <div class="left-section">
+                <div class="logo">
+                    <img src="Images/logo.png" alt="Logo" />
+                </div>
+                <div class="brand">
+                    <h1>PocketGadget</h1>
+                </div>
+            </div>
+
+            <nav class="navbar">
+                <ul>
+                    <li><a href="CartController">Products</a></li>
+                    <li><a href="cart.jsp">Cart</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Login / Register</a></li>
+                    <li><a href="#">Account</a></li>
+                    <li><a href="#"><i class="bx bx-search"></i></a></li>
+                    <li>
+                        <button id="theme-toggle" class="theme-toggle">
+                            <i class="bx bx-moon"></i>
+                            <span class="theme-text">Light Mode</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="content-container">
+            <div class="product-header">
                 <h1>Our Gadgets</h1>
                 <div class="search-container">
                     <form method="get" action="ProductSearchController">
@@ -65,7 +101,6 @@
             </div>
 
             <% 
-            // 从请求中获取传递的产品列表
             List<Product> products = (List<Product>) request.getAttribute("products");
             
             // Show current category if selected
@@ -104,6 +139,78 @@
                 <p>Please try again or contact the administrator</p>
             </div>
             <% } %>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+          <div class="contain">
+            <div class="col">
+              <h1>Company</h1>
+              <ul>
+                <li>About</li>
+                <li>Mission</li>
+                <li>Services</li>
+                <li>Social</li>
+                <li>Get in touch</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h1>Products</h1>
+              <ul>
+                <li>About</li>
+                <li>Mission</li>
+                <li>Services</li>
+                <li>Social</li>
+                <li>Get in touch</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h1>Accounts</h1>
+              <ul>
+                <li>About</li>
+                <li>Mission</li>
+                <li>Services</li>
+                <li>Social</li>
+                <li>Get in touch</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h1>Resources</h1>
+              <ul>
+                <li>Webmail</li>
+                <li>Redeem code</li>
+                <li>WHOIS lookup</li>
+                <li>Site map</li>
+                <li>Web templates</li>
+                <li>Email templates</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h1>Support</h1>
+              <ul>
+                <li>Contact us</li>
+              </ul>
+            </div>
+            <div class="col social">
+              <h1>Social</h1>
+              <ul>
+                <li>
+                  <a href="https://www.instagram.com/">
+                    <img src="Images/IG.png" width="32" style="width: 25px; border-radius: 40%;">
+                  </a>
+                </li>       
+                <li>
+                  <a href="https://www.facebook.com/">
+                    <img src="Images/FB.png" width="32" style="width: 25px; border-radius: 40%;">
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="clearfix"></div>
+            <footer>
+              <p>&copy;2025 PocketGadget. All rights reserved.</p>
+            </footer>
+          </div>
         </div>
     </body>
 </html>

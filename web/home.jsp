@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" class="dark-theme">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,9 +7,11 @@
   <link rel="stylesheet" href="home.css" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <script src="theme.js"></script>
 </head>
 <body>
-  <header class="header">
+  <!-- Header Section with theme-specific data attribute -->
+  <header class="header" data-theme-target="header">
     <div class="left-section">
       <div class="logo">
         <img src="Images/logo.png" alt="Logo" />
@@ -28,6 +30,12 @@
         <li><a href="#">Login / Register</a></li>
         <li><a href="#">Account</a></li>
         <li><a href="#"><i class="bx bx-search"></i></a></li>
+        <li>
+          <button id="theme-toggle" class="theme-toggle">
+            <i class="bx bx-moon"></i>
+            <span class="theme-text">Switch Theme</span>
+          </button>
+        </li>
       </ul>
     </nav>
   </header>

@@ -57,10 +57,10 @@ public class CartController extends HttpServlet {
                         productList.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()));
                         break;
                     case "nameAsc":
-                        productList.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+                        productList.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
                         break;
                     case "nameDesc":
-                        productList.sort((p1, p2) -> p2.getName().compareTo(p1.getName()));
+                        productList.sort((p1, p2) -> p2.getName().compareToIgnoreCase(p1.getName()));
                         break;
                 }
             }

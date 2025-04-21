@@ -1,3 +1,112 @@
+/* Theme Variables */
+:root {
+  /* Light Theme Variables */
+  --light-bg-color: #f5f5f5;
+  --light-text-color: #333;
+  --light-heading-color: #222;
+  --light-accent-color: #ff4500;
+  --light-card-bg: #fff;
+  --light-card-border: #ddd;
+  --light-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --light-btn-bg: linear-gradient(90deg, #ff0000, #ff4500);
+  --light-btn-text: #fff;
+  --light-filter-bg: #eee;
+}
+
+/* Dark Theme is Default */
+:root {
+  --bg-color: black;
+  --text-color: #fff;
+  --heading-color: #fff;
+  --card-bg: rgba(20, 20, 20, 0.8);
+  --card-border: rgba(255, 70, 70, 0.3);
+  --shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+  --btn-bg: linear-gradient(90deg, #ff0000, #ff4500);
+  --btn-text: white;
+  --filter-bg: rgba(20, 20, 20, 0.8);
+}
+
+/* Light Theme Class */
+html.light-theme {
+  --bg-color: var(--light-bg-color);
+  --text-color: var(--light-text-color);
+  --heading-color: var(--light-heading-color);
+  --card-bg: var(--light-card-bg);
+  --card-border: var(--light-card-border);
+  --shadow: var(--light-shadow);
+  --btn-bg: var(--light-btn-bg);
+  --btn-text: var(--light-btn-text);
+  --filter-bg: var(--light-filter-bg);
+  --header-bg: var(--light-header-bg);
+  --nav-text: var(--light-nav-text);
+  --footer-bg: var(--light-footer-bg);
+}
+
+/* Enhanced text glow for light mode */
+html.light-theme h1 {
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7), 0 0 10px rgba(255, 0, 0, 0.6), 0 0 15px rgba(255, 69, 0, 0.5);
+  color: #222;
+}
+
+html.light-theme .brand h1 {
+  text-shadow: 0 0 5px #ff0000, 0 0 10px #ff4500, 0 0 15px rgba(255, 0, 0, 0.8);
+  color: #fff;
+}
+
+html.light-theme .navbar a {
+  text-shadow: 0 0 5px #ff0000, 0 0 8px #ff4500;
+  color: #fff;
+}
+
+html.light-theme .navbar a:hover {
+  color: #ffd700;
+  text-shadow: 0 0 8px #ff0000, 0 0 15px #ff4500;
+}
+
+/* Enhance light mode text glows for showcase section */
+html.light-theme .showcase h1 {
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8), 0 0 13px rgba(255, 0, 0, 0.7), 0 0 20px rgba(255, 69, 0, 0.6);
+  color: #222;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 2px solid rgba(255, 70, 70, 0.6);
+  border-radius: 20px;
+  padding: 5px 12px;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Orbitron', sans-serif;
+}
+
+html.light-theme .theme-toggle {
+  border-color: #ff4500;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+html.light-theme .theme-toggle:hover {
+  background: rgba(255, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.theme-toggle i {
+  margin-right: 5px;
+  font-size: 18px;
+}
+
+.theme-text {
+  font-size: 12px;
+  font-weight: bold;
+}
+
 /* Global Reset */
 * {
   margin: 0;
@@ -7,8 +116,8 @@
 
 body {
   font-family: 'Orbitron', sans-serif;
-  background: black;
-  color: #fff;
+  background: var(--bg-color);
+  color: var(--text-color);
   min-height: 100%;
   overflow-x: hidden;
 }
@@ -20,7 +129,13 @@ body {
   align-items: center;
   padding: 15px 30px;
   background-color: black;
+  transition: background-color 0.3s ease;
 }
+
+html.light-theme .header {
+  background-color: #1a1a1a;
+}
+
 header .choosing {
   display: flex;
   justify-content: space-between;
@@ -420,23 +535,32 @@ gap: 10px;
   =======================================================================================
   =======================================================================================*/
 
-/* STYLES SPECIFIC TO FOOTER  */
+/* FOOTER STYLES */
 .footer {
   width: 100%;
   position: relative;
   height: auto;
-  background-color: black;
+  background-color: var(--footer-bg);
   margin-top: 20px;
-  margin-left:60px;
+  margin-left: 0; /* Fixed margin issue */
+  transition: background-color 0.3s ease;
+}
+
+html.light-theme .footer {
+  background-color: #1a1a1a;
+}
+
+.footer .contain {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .footer footer {
   text-align: center;
-  margin-right: 100px;
   padding: 20px;
+  margin-right: 0; /* Fixed margin issue */
 }
-
-
 
 .footer .col {
   width: 190px;
@@ -530,5 +654,25 @@ gap: 10px;
   .footer .col {
     width: 100%;
   }
+}
+
+/* Adjust text shadows for light theme */
+html.light-theme h1 {
+  text-shadow: 0 0 3px rgba(255, 0, 0, 0.3);
+}
+
+html.light-theme .brand h1 {
+  text-shadow: 0 0 3px #ff0000, 0 0 6px rgba(255, 0, 0, 0.5);
+  color: #fff;
+}
+
+html.light-theme .navbar a {
+  text-shadow: 0 0 3px #ff0000, 0 0 6px rgba(255, 0, 0, 0.5);
+}
+
+/* Fix for navbar links in light mode */
+html.light-theme .navbar a:hover {
+  color: #ffd700;
+  text-shadow: 0 0 5px #ff0000, 0 0 10px #ff4500;
 }
 
