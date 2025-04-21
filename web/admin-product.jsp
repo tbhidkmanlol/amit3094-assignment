@@ -98,7 +98,6 @@
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea id="description" name="description" required placeholder="Enter product description"></textarea>
-                    <small>Include the category name in the description for better filtering.</small>
                 </div>
                 
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Product</button>
