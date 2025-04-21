@@ -116,19 +116,24 @@
             <div class="product-grid">
                 <% for (Product p : products) { %>
                 <div class="product-card">
-                    <img src="<%= request.getContextPath() + "/" + p.getImage() %>" 
-                         alt="<%= p.getName() %>" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title"><%= p.getName() %></h3>
-                        <div class="product-price">RM <%= String.format("%.2f", p.getPrice()) %></div>
-                        <div class="product-quantity">Available: <%= p.getQuantity() %></div>
-                        <div class="product-description"><%= p.getDescription() %></div>
+                    <a href="ProductDetails.jsp?id=<%= p.getId() %>" class="product-link">
+                        <img src="<%= request.getContextPath() + "/" + p.getImage() %>" 
+                             alt="<%= p.getName() %>" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-title"><%= p.getName() %></h3>
+                            <div class="product-price">RM <%= String.format("%.2f", p.getPrice()) %></div>
+                            <div class="product-quantity">Available: <%= p.getQuantity() %></div>
+                            <div class="product-description"><%= p.getDescription() %></div>
+                        </div>
+                    </a>
+                    <div class="product-actions">
                         <form method="post" action="add-to-cart">
                             <input type="hidden" name="productId" value="<%= p.getId() %>">
                             <input type="number" name="quantity" min="1" max="<%= p.getQuantity() %>" 
                                    value="1" class="quantity-input">
                             <button type="submit" class="add-to-cart">Add to Cart</button>
                         </form>
+                        <a href="ProductDetails.jsp?id=<%= p.getId() %>" class="view-reviews-btn">View Reviews</a>
                     </div>
                 </div>
                 <% } %>
