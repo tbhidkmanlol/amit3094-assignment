@@ -383,8 +383,6 @@ html.light-theme .sort-option {
     position: relative;
     color: var(--text-color);
     border: 1px solid var(--card-border);
-    display: flex;
-    flex-direction: column;
 }
 .product-card:hover {
     transform: translateY(-5px);
@@ -423,7 +421,6 @@ html.light-theme .sort-option {
 
 .product-info {
     padding: 15px;
-    flex: 1;
 }
 
 .product-quantity {
@@ -453,7 +450,6 @@ html.light-theme .quantity-input {
     margin: 0 0 10px;
     color: var(--heading-color);
     text-shadow: 0 0 3px #ff0000;
-    transition: color 0.2s;
 }
 
 html.light-theme .product-title {
@@ -717,68 +713,4 @@ html.light-theme .navbar a {
 html.light-theme .navbar a:hover {
   color: #ffd700;
   text-shadow: 0 0 5px #ff0000, 0 0 10px #ff4500;
-}
-
-.product-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    width: 100%;
-}
-
-.product-actions {
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.view-reviews-btn {
-    display: block;
-    width: 100%;
-    padding: 8px 0;
-    background: transparent;
-    color: var(--text-color);
-    border: 1px solid #ff4500;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    text-align: center;
-    transition: all 0.3s;
-    margin-top: 5px;
-    text-decoration: none;
-    font-family: 'Orbitron', sans-serif;
-}
-
-.view-reviews-btn:hover {
-    background: rgba(255, 69, 0, 0.1);
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
-}
-
-html.light-theme .view-reviews-btn {
-    border-color: #ff4500;
-    color: #333;
-}
-
-html.light-theme .view-reviews-btn:hover {
-    background: rgba(255, 69, 0, 0.1);
-}
-
-/* Adjust product card spacing for the new layout */
-.product-card {
-    display: flex;
-    flex-direction: column;
-}
-
-.product-card .product-info {
-    flex: 1;
-}
-
-/* Make the product title look more clickable */
-.product-title {
-    transition: color 0.2s;
-}
-
-.product-link:hover .product-title {
-    color: #ff4500;
 }

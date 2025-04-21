@@ -43,7 +43,16 @@ public class AuthController extends HttpServlet {
                     if (user != null) {
                         HttpSession session = request.getSession();
                         session.setAttribute("user", user);
+                        
+                        // Check if there's a redirect destination after login
+                        String redirectDestination = (String) session.getAttribute("redirectAfterLogin");
+                        if (redirectDestination != null && !redirectDestination.isEmpty()) {
+                            session.removeAttribute("redirectAfterLogin");
+                            response.sendRedirect("../" + redirectDestination);
+                            return;
+                        }
 
+                        // Otherwise proceed with normal role-based redirection
                         switch (user.getRole()) {
                             case "MANAGER":
                                 response.sendRedirect("../manager/dashboard.jsp");
@@ -68,6 +77,26 @@ public class AuthController extends HttpServlet {
                     );
 
                     if (userDao.registerCustomer(newUser)) {
+                        // Check if there's a redirect destination after registration
+                        HttpSession session = request.getSession();
+                        String redirectDestination = (String) session.getAttribute("redirectAfterLogin");
+                        
+                        if (redirectDestination != null && !redirectDestination.isEmpty()) {
+                            // Auto-login the user after registration
+                            User registeredUser = userDao.authenticate(
+                                request.getParameter("username"),
+                                request.getParameter("password")
+                            );
+                            
+                            if (registeredUser != null) {
+                                session.setAttribute("user", registeredUser);
+                                session.removeAttribute("redirectAfterLogin");
+                                response.sendRedirect("../" + redirectDestination);
+                                return;
+                            }
+                        }
+                        
+                        // Default registration success flow
                         response.sendRedirect("../login.jsp?registered=1");
                     } else {
                         response.sendRedirect("../register.jsp?error=1");

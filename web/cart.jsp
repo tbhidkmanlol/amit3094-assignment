@@ -31,6 +31,11 @@
 <% } %>
 
     <body>
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">
+            <i class="fas fa-moon"></i>
+        </button>
+        
         <div class="container">
             <div class="header">
                 <h1><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h1>
@@ -111,7 +116,7 @@
                         <span>Total:</span>
                         <span id="cart-total">RM <%= String.format("%.2f", total) %></span>
                     </div>
-                        <a href="payment.jsp" class="checkout-btn">
+                        <a href="CheckoutServlet" class="checkout-btn">
                         Proceed to Checkout <i class="fas fa-arrow-right"></i>
                         </a>
                 </div>
@@ -122,6 +127,31 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function () {
+                // Theme toggle functionality
+                const themeToggle = document.getElementById('theme-toggle');
+                const themeIcon = themeToggle.querySelector('i');
+                
+                // Check if user has a previously saved theme preference
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark-theme');
+                    themeIcon.className = 'fas fa-sun';
+                }
+                
+                // Theme toggle click handler
+                themeToggle.addEventListener('click', function() {
+                    document.documentElement.classList.toggle('dark-theme');
+                    
+                    // Update button icon
+                    if (document.documentElement.classList.contains('dark-theme')) {
+                        themeIcon.className = 'fas fa-sun';
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        themeIcon.className = 'fas fa-moon';
+                        localStorage.setItem('theme', 'light');
+                    }
+                });
+                
                 // 更新总价函数
                 function updateTotal() {
                     let subtotal = 0;
@@ -190,6 +220,11 @@ $('.quantity-input').on('change', function() {
                 row.fadeOut(300, function() {
                     $(this).remove();
                     updateTotal();
+                    
+                    // Check if cart is empty after removing item
+                    if ($('tbody tr').length === 0) {
+                        window.location.reload(); // Reload to show empty cart message
+                    }
                 });
             } else {
                 alert('Error removing item');

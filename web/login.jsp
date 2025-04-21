@@ -66,6 +66,13 @@
                     <span>You have been successfully logged out.</span>
                 </div>
                 <% } %>
+                
+                <% if (request.getParameter("checkout") != null) { %>
+                <div class="cyber-alert">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Please login or register to proceed with checkout.</span>
+                </div>
+                <% } %>
 
                 <form action="auth/login" method="post">
                     <div class="cyber-input-group">

@@ -7,6 +7,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     Author     : Dell
 */
 :root {
+    /* Default dark theme */
     --primary: #4361ee;
     --secondary: #3f37c9;
     --accent: #4895ef;
@@ -16,6 +17,28 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     --dark: #212529;
     --gray: #6c757d;
     --white: #ffffff;
+    
+    /* Theme colors */
+    --bg-color: #f5f7fa;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --border-color: #e0e0e0;
+    --header-color: #4361ee;
+    --table-header-bg: #4361ee;
+    --table-header-text: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme */
+html.dark-theme {
+    --bg-color: #1a1a2e;
+    --text-color: #f0f0f0;
+    --card-bg: #272640;
+    --border-color: #3a3a55;
+    --header-color: #4cc9f0;
+    --table-header-bg: #16213e;
+    --table-header-text: #f0f0f0;
+    --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -26,9 +49,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f5f7fa;
-    color: var(--dark);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -37,18 +61,43 @@ body {
     padding: 2rem;
 }
 
+/* Theme toggle button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: var(--table-header-bg);
+    color: var(--table-header-text);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 10px var(--shadow-color);
+    transition: transform 0.3s, background-color 0.3s;
+    z-index: 100;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .header h1 {
     font-size: 2rem;
-    color: var(--primary);
+    color: var(--header-color);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -88,7 +137,7 @@ body {
 .cart-empty h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    color: var(--dark);
+    color: var(--text-color);
 }
 
 .cart-empty p {
@@ -99,15 +148,16 @@ body {
 .cart-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--white);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    background-color: var(--card-bg);
+    box-shadow: 0 0.5rem 1rem var(--shadow-color);
     border-radius: 0.5rem;
     overflow: hidden;
+    transition: background-color 0.3s;
 }
 
 .cart-table thead {
-    background-color: var(--primary);
-    color: var(--white);
+    background-color: var(--table-header-bg);
+    color: var(--table-header-text);
 }
 
 .cart-table th {
@@ -118,7 +168,7 @@ body {
 
 .cart-table td {
     padding: 1rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .cart-table tr:last-child td {
@@ -210,10 +260,10 @@ body {
 }
 
 .summary-card {
-    background-color: var(--white);
+    background-color: var(--card-bg);
     padding: 1.5rem;
     border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.5rem 1rem var(--shadow-color);
     width: 300px;
 }
 
@@ -226,7 +276,7 @@ body {
 .summary-total {
     font-weight: 600;
     font-size: 1.25rem;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--border-color);
     padding-top: 1rem;
     margin-top: 1rem;
 }
@@ -270,7 +320,7 @@ body {
     .cart-table tr {
         display: block;
         margin-bottom: 1rem;
-        border: 1px solid #e0e0e0;
+        border: 1px solid var(--border-color);
         border-radius: 0.5rem;
     }
 
@@ -279,7 +329,7 @@ body {
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem;
-        border-bottom: 1px solid #e0e0e0;
+        border-bottom: 1px solid var(--border-color);
     }
 
     .cart-table td::before {

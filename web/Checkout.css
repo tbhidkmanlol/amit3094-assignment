@@ -1,0 +1,438 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 18, 2025, 2:05:58 AM
+    Author     : wonghx
+*/
+
+
+        :root {
+            --white-light: rgba(255, 255, 255, 0.5);
+            --alice-blue: #f8f9fa;
+            --carribean-green: #40c9a2;
+            --gray: #ededed;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .checkout-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .checkout-left {
+            flex: 2;
+            padding: 2rem;
+            border-right: 1px solid var(--gray);
+        }
+        
+        .checkout-right {
+            flex: 1;
+            padding: 2rem;
+            background: var(--alice-blue);
+        }
+        
+        .logo {
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        
+        .checkout-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .checkout-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gray);
+            z-index: 1;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .step.active .step-number {
+            background: var(--carribean-green);
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .step.active .step-label {
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .express-checkout {
+            margin-bottom: 1.5rem;
+        }
+        
+        .express-checkout h4 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .payment-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .payment-button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .shop-pay {
+            background: #5a31f4;
+            color: white;
+        }
+        
+        .google-pay {
+            background: #000;
+            color: white;
+        }
+        
+        .divider {
+            position: relative;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gray);
+            z-index: 1;
+        }
+        
+        .divider-text {
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 0 1rem;
+            color: #666;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-link a {
+            color: var(--carribean-green);
+            text-decoration: none;
+        }
+        
+        h3 {
+            margin: 1.5rem 0 1rem;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .select-wrapper {
+            position: relative;
+        }
+        
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+        }
+        
+        .select-wrapper select {
+            appearance: none;
+            padding-right: 2rem;
+        }
+        
+        .row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .col {
+            flex: 1;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .checkbox-container input {
+            margin-right: 0.5rem;
+        }
+        
+        .button-container {
+            margin: 2rem 0;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .btn-back {
+            background: none;
+            color: var(--carribean-green);
+        }
+        
+        .policy-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .policy-links a {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .shipping-option {
+    margin: 1.5rem 0;
+}
+
+.option-card {
+    border: 1px solid var(--gray);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+.option-content {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+.option-content input[type="radio"] {
+    margin-right: 1rem;
+    margin-top: 0.3rem;
+}
+
+.option-details {
+    flex: 1;
+}
+
+.option-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.option-title {
+    font-weight: bold;
+    color: #333;
+}
+
+.option-price {
+    color: #333;
+    font-weight: bold;
+}
+
+.option-description {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.option-description a {
+    color: var(--carribean-green);
+    text-decoration: none;
+}
+
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .cart-image {
+            position: relative;
+            margin-right: 1rem;
+        }
+        
+        .cart-image img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .item-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--carribean-green);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 0.3rem;
+            text-transform: capitalize;
+        }
+        
+        .item-type {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .item-price {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .promo-code {
+            display: flex;
+            margin: 1.5rem 0;
+        }
+        
+        .promo-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--gray);
+            border-radius: 4px 0 0 4px;
+            font-family: inherit;
+        }
+        
+        .promo-button {
+            padding: 0 1rem;
+            background: var(--gray);
+            border: 1px solid var(--gray);
+            border-left: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        
+        .shipping-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+        
+        .total {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray);
+            font-weight: bold;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        
+        .btn-continue {
+            width: 100%;
+            padding: 1rem;
+            background: var(--carribean-green);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
