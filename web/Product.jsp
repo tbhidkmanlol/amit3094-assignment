@@ -57,8 +57,14 @@
                     </form>
                 </div>
                 <a href="cart.jsp" class="cart-link">
-                    <i class="fas fa-shopping-cart"></i> Check Cart
-                </a>
+                    <i class="fas fa-shopping-cart"></i>
+                    <% 
+                        Integer cartCount = (Integer) session.getAttribute("cartCount");
+                        if (cartCount != null && cartCount > 0) { 
+                    %>
+                        <span class="cart-count"><%= cartCount %></span>
+                    <% } %>
+                 </a>
             </div>
 
             <% if (request.getParameter("searchTerm") != null && !request.getParameter("searchTerm").isEmpty()) { %>
