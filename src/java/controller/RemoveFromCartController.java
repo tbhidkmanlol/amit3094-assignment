@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controller;
 
 import dao.ProductDAO;
@@ -17,10 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import model.CartItem;
 
-/**
- *
- * @author Dell
- */
 @WebServlet("/RemoveFromCartController")
 public class RemoveFromCartController extends HttpServlet {
 
@@ -46,17 +38,19 @@ public class RemoveFromCartController extends HttpServlet {
                             out.print("{\"status\":\"error\",\"message\":\"Failed to update stock\"}");
                             return;
                         }
-                        
+
                         String productName = item.getProduct().getName();
-                        int quantity = item.getQuantity();
                         iterator.remove();
-                        
+
                         // Calculate total items remaining in cart
                         int totalItems = 0;
                         for (CartItem cartItem : cart) {
                             totalItems += cartItem.getQuantity();
                         }
-                        
+
+                        // Update cartCount session
+                        session.setAttribute("cartCount", totalItems);
+
                         out.print("{\"status\":\"success\",\"message\":\"" + productName + " removed from cart\",\"itemCount\":" + totalItems + "}");
                         return;
                     }
@@ -73,11 +67,10 @@ public class RemoveFromCartController extends HttpServlet {
             out.print("{\"status\":\"error\",\"message\":\"Server error: " + e.getMessage() + "\"}");
         }
     }
-    
-    // Support GET requests for form submissions (with redirect)
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         try {
             int productId = Integer.parseInt(request.getParameter("productId"));
 
@@ -92,17 +85,24 @@ public class RemoveFromCartController extends HttpServlet {
                         // Return quantity to stock
                         ProductDAO.updateProductQuantity(productId, item.getQuantity());
                         iterator.remove();
-                        
+
+                        // Calculate and update cartCount session
+                        int totalItems = 0;
+                        for (CartItem cartItem : cart) {
+                            totalItems += cartItem.getQuantity();
+                        }
+                        session.setAttribute("cartCount", totalItems);
+
                         session.setAttribute("message", "Item removed from cart");
                         response.sendRedirect("CartController?action=view");
                         return;
                     }
                 }
             }
-            
+
             session.setAttribute("error", "Could not remove item from cart");
             response.sendRedirect("CartController?action=view");
-            
+
         } catch (Exception e) {
             request.getSession().setAttribute("error", "Error: " + e.getMessage());
             response.sendRedirect("CartController?action=view");

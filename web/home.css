@@ -542,9 +542,10 @@ gap: 10px;
   height: auto;
   background-color: var(--footer-bg);
   margin-top: 20px;
-  margin-left: 0; /* Fixed margin issue */
+  margin-left: 200px; /* Fixed margin issue */
   transition: background-color 0.3s ease;
 }
+
 
 html.light-theme .footer {
   background-color: #1a1a1a;
@@ -559,7 +560,7 @@ html.light-theme .footer {
 .footer footer {
   text-align: center;
   padding: 20px;
-  margin-right: 0; /* Fixed margin issue */
+  margin-right: 37  0px; /* Fixed margin issue */
 }
 
 .footer .col {

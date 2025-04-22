@@ -32,7 +32,6 @@
                     <li><a href="cart.jsp">Cart</a></li>
                     <li><a href="#">About Us</a></li>
                     <li><a href="#">Contact Us</a></li>
-                    <li><a href="login.jsp">Login / Register</a></li>
                     <li><a href="#">Account</a></li>
                     <li><a href="#"><i class="bx bx-search"></i></a></li>
                     <li>

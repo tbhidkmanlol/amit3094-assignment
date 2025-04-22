@@ -206,7 +206,8 @@ html.light-theme header.header {
   letter-spacing: 1px;
   color: #fff;
   text-shadow: 0 0 5px #fff, 0 0 10px #ff0000, 0 0 20px #ff4500;
-  margin-top: -30px; /* Move it up */
+  margin-top: -5px; /* Move it up */
+  margin-left:5px;
   text-align: left;
 }
 
@@ -217,7 +218,7 @@ html.light-theme header.header {
   display: flex;
   gap: 30px;
   align-items: center;
-  margin-top: -25px; /* Move it up */
+  margin-top: -10px; /* Move it up */
 }
 
 .navbar a {
@@ -498,13 +499,18 @@ html.light-theme .product-title {
     font-weight: bold;
     font-size: 14px;
     transition: all 0.3s;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);a
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 70, 70, 0.3);
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
+
+.cart-link i {
+    font-size: 24px;
+}
+
 
 .cart-link:hover {
     background: linear-gradient(90deg, #ff4500, #ff0000);
@@ -639,6 +645,7 @@ html.light-theme .clear-search {
 .footer {
   background-color: black;
   transition: background-color 0.3s ease;
+  margin-left:50px;
 }
 
 /* Light theme version of footer */
@@ -649,7 +656,7 @@ html.light-theme .footer {
 .footer footer {
   text-align: center;
   padding: 20px;
-  margin-right: 0; /* Fixed margin issue */
+  margin-right:60px; /* Fixed margin issue */
 }
 
 .footer .col {
