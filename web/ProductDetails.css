@@ -272,6 +272,8 @@ textarea.form-control {
 
 .star-rating {
     display: flex;
+    flex-direction: row-reverse; /* Reverse the order to fix the star alignment */
+    justify-content: flex-end; /* Align to the right end */
     gap: 5px;
 }
 
@@ -281,19 +283,23 @@ textarea.form-control {
 
 .star-rating label {
     font-size: 24px;
-    color: #ddd;
+    color: #555;
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.star-rating input:checked ~ label,
-.star-rating label:hover,
-.star-rating label:hover ~ label {
+/* Fix selectors for proper star highlighting */
+.star-rating input:checked ~ label {
     color: gold;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
-.star-rating input:checked + label {
+/* Fix hover and checked states */
+.star-rating input:checked ~ label,
+.star-rating:not(:checked) > label:hover,
+.star-rating:not(:checked) > label:hover ~ label {
     color: gold;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
 .btn {
@@ -810,6 +816,8 @@ textarea.form-control {
 
 .star-rating {
     display: flex;
+    flex-direction: row-reverse; /* Reverse the order to fix the star alignment */
+    justify-content: flex-end; /* Align to the right end */
     gap: 5px;
 }
 
@@ -824,9 +832,16 @@ textarea.form-control {
     transition: color 0.2s;
 }
 
+/* Fix selectors for proper star highlighting */
+.star-rating input:checked ~ label {
+    color: gold;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* Fix hover and checked states */
 .star-rating input:checked ~ label,
-.star-rating label:hover,
-.star-rating label:hover ~ label {
+.star-rating:not(:checked) > label:hover,
+.star-rating:not(:checked) > label:hover ~ label {
     color: gold;
     text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }

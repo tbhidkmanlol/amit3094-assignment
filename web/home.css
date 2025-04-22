@@ -175,6 +175,7 @@ gap: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: flex-start; /* Aligns content to the left */
 }
 
 .brand h1 {
@@ -182,8 +183,8 @@ gap: 10px;
   font-weight: 600;
   letter-spacing: 1px;
   color: #fff;
-  text-shadow:0 0 5px #fff, 0 0 10px #ff0000, 0 0 20px #ff4500;
-  margin-top: -30px; /* Move it up */
+  text-shadow: 0 0 5px #fff, 0 0 10px #ff0000, 0 0 20px #ff4500;
+  margin-top: -20px; /* Adjusted to align better with other elements */
 }
 
 @keyframes flicker {
@@ -219,9 +220,7 @@ gap: 10px;
   display: flex;
   gap: 30px;
   align-items: center;
-  margin-top: -25px; /* Move it up */
-  
-
+  margin-top: -20px; /* Adjusted to match brand alignment */
 }
 
 .navbar a {
@@ -540,19 +539,22 @@ gap: 10px;
   width: 100%;
   position: relative;
   height: auto;
-  background-color: var(--footer-bg);
+  background-color: #1a1a1a;
   margin-top: 20px;
-  margin-left: 200px; /* Fixed margin issue */
+  /* Center the footer content */
+  display: flex;
+  justify-content: center;
   transition: background-color 0.3s ease;
 }
 
-
 html.light-theme .footer {
   background-color: #1a1a1a;
+  color: #f5f5f5;
 }
 
 .footer .contain {
-  width: 100%;
+  width: 80%; /* Set to a percentage for better centering */
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -560,7 +562,7 @@ html.light-theme .footer {
 .footer footer {
   text-align: center;
   padding: 20px;
-  margin-right: 37  0px; /* Fixed margin issue */
+  margin-right: 0; /* Fixed incorrect margin */
 }
 
 .footer .col {
@@ -657,6 +659,19 @@ html.light-theme .footer {
   }
 }
 
+html.light-theme .footer .col h1 {
+  color: rgba(255,255,255,0.7); /* Increased opacity for better visibility in light mode */
+  text-shadow: none; /* Remove default h1 text shadow */
+}
+
+html.light-theme .footer .col ul li {
+  color: #cccccc; /* Lighter color for better visibility in light mode */
+}
+
+html.light-theme .footer .col ul li:hover {
+  color: #ffffff;
+}
+
 /* Adjust text shadows for light theme */
 html.light-theme h1 {
   text-shadow: 0 0 3px rgba(255, 0, 0, 0.3);
@@ -748,5 +763,41 @@ html.light-theme .dropdown-content {
 
 .logout-link:hover {
   background: rgba(255, 0, 0, 0.3) !important;
+}
+
+/* Cart badge styling */
+.cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4500;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+}
+
+/* Navbar cart badge specific styling */
+.navbar a .cart-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #ff4500;
+    color: white;
+    font-size: 10px;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 

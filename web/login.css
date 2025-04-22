@@ -55,10 +55,23 @@ body {
     align-items: center;
     overflow-x: hidden;
     position: relative;
-    /* Removing the MP4 background image as it's not supported */
+    /* Updated to use the video background instead */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+}
+
+#background-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -10;
+    object-fit: cover;
+    filter: brightness(0.5) contrast(1.1);
 }
 
 body::before {

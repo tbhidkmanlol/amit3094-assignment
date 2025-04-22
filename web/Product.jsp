@@ -29,9 +29,17 @@
             <nav class="navbar">
                 <ul>
                     <li><a href="CartController">Products</a></li>
-                    <li><a href="cart.jsp">Cart</a></li>
+                    <li><a href="cart.jsp" style="position: relative;">Cart
+                            <%
+                                Integer navCartCount = (Integer) session.getAttribute("cartCount");
+                                if (navCartCount != null && navCartCount > 0) {
+                            %>
+                            <span class="cart-badge" style="top: -10px; right: -10px;"><%= navCartCount%></span>
+                            <% } %>
+                        </a></li>
                     <li><a href="#">About Us</a></li>
                     <li><a href="#">Contact Us</a></li>
+                    <li><a href="login.jsp">Login / Register</a></li>
                     <li><a href="#">Account</a></li>
                     <li><a href="#"><i class="bx bx-search"></i></a></li>
                     <li>
@@ -61,86 +69,94 @@
                         Integer cartCount = (Integer) session.getAttribute("cartCount");
                         if (cartCount != null && cartCount > 0) { 
                     %>
-                        <span class="cart-count"><%= cartCount %></span>
+                        <span class="cart-badge"><%= cartCount %></span>
                     <% } %>
-                 </a>
+                </a>
             </div>
 
-            <% if (request.getParameter("searchTerm") != null && !request.getParameter("searchTerm").isEmpty()) { %>
+            <% if (request.getParameter("searchTerm") != null && !request.getParameter("searchTerm").isEmpty()) {%>
             <div class="search-results-message">
-                Showing results for: "<%= request.getParameter("searchTerm") %>"
+                Showing results for: "<%= request.getParameter("searchTerm")%>"
                 <a href="CartController" class="clear-search">(Clear search)</a>
             </div>
-            <% } %>
-            
+            <% }%>
+
             <!-- Category Filter Section -->
             <div class="category-filter">
                 <h3>Categories</h3>
                 <div class="category-list">
-                    <a href="CartController" class="category-item <%= request.getParameter("category") == null ? "active" : "" %>">All Products</a>
-                    <% 
-                    List<String> categories = (List<String>) request.getAttribute("categories");
-                    if (categories != null) {
-                        for (String category : categories) {
-                            boolean isActive = category.equals(request.getParameter("category"));
+                    <a href="CartController" class="category-item <%= request.getParameter("category") == null ? "active" : ""%>">All Products</a>
+                    <%
+                        List<String> categories = (List<String>) request.getAttribute("categories");
+                        if (categories != null) {
+                            for (String category : categories) {
+                                boolean isActive = category.equals(request.getParameter("category"));
                     %>
-                    <a href="CartController?category=<%= category %>" 
-                       class="category-item <%= isActive ? "active" : "" %>"><%= category %></a>
-                    <% 
+                    <a href="CartController?category=<%= category%>" 
+                       class="category-item <%= isActive ? "active" : ""%>"><%= category%></a>
+                    <%
+                            }
                         }
-                    } 
                     %>
                 </div>
-                
+
                 <!-- Sort Options -->
                 <h3>Sort By</h3>
                 <div class="sort-options">
-                    <% 
-                    String currentCategory = request.getParameter("category");
-                    String categoryParam = currentCategory != null ? "&category=" + currentCategory : "";
-                    String selectedSort = (String) request.getAttribute("selectedSort");
+                    <%
+                        String currentCategory = request.getParameter("category");
+                        String categoryParam = currentCategory != null ? "&category=" + currentCategory : "";
+                        String selectedSort = (String) request.getAttribute("selectedSort");
                     %>
-                    <a href="CartController?sortBy=priceAsc<%= categoryParam %>" 
-                       class="sort-option <%= "priceAsc".equals(selectedSort) ? "active" : "" %>">Price: Low to High</a>
-                    <a href="CartController?sortBy=priceDesc<%= categoryParam %>" 
-                       class="sort-option <%= "priceDesc".equals(selectedSort) ? "active" : "" %>">Price: High to Low</a>
-                    <a href="CartController?sortBy=nameAsc<%= categoryParam %>" 
-                       class="sort-option <%= "nameAsc".equals(selectedSort) ? "active" : "" %>">Name: A to Z</a>
-                    <a href="CartController?sortBy=nameDesc<%= categoryParam %>" 
-                       class="sort-option <%= "nameDesc".equals(selectedSort) ? "active" : "" %>">Name: Z to A</a>
+                    <a href="CartController?sortBy=priceAsc<%= categoryParam%>" 
+                       class="sort-option <%= "priceAsc".equals(selectedSort) ? "active" : ""%>">Price: Low to High</a>
+                    <a href="CartController?sortBy=priceDesc<%= categoryParam%>" 
+                       class="sort-option <%= "priceDesc".equals(selectedSort) ? "active" : ""%>">Price: High to Low</a>
+                    <a href="CartController?sortBy=nameAsc<%= categoryParam%>" 
+                       class="sort-option <%= "nameAsc".equals(selectedSort) ? "active" : ""%>">Name: A to Z</a>
+                    <a href="CartController?sortBy=nameDesc<%= categoryParam%>" 
+                       class="sort-option <%= "nameDesc".equals(selectedSort) ? "active" : ""%>">Name: Z to A</a>
                 </div>
             </div>
 
-            <% 
-            List<Product> products = (List<Product>) request.getAttribute("products");
-            
-            // Show current category if selected
-            String categoryTitle = request.getParameter("category");
-            if (categoryTitle != null && !categoryTitle.isEmpty()) {
+            <%
+                List<Product> products = (List<Product>) request.getAttribute("products");
+
+                // Show current category if selected
+                String categoryTitle = request.getParameter("category");
+                if (categoryTitle != null && !categoryTitle.isEmpty()) {
             %>
-                <div class="category-title">
-                    <h2><%= categoryTitle %></h2>
-                </div>
+            <div class="category-title">
+                <h2><%= categoryTitle%></h2>
+            </div>
             <% } %>
-        
+
             <% if (products != null && !products.isEmpty()) { %>
             <div class="product-grid">
-                <% for (Product p : products) { %>
+                <% for (Product p : products) {%>
                 <div class="product-card">
-                    <a href="ProductDetails.jsp?id=<%= p.getId() %>" class="product-link">
-                        <img src="<%= request.getContextPath() + "/" + p.getImage() %>" 
-                             alt="<%= p.getName() %>" class="product-image">
+                    <a href="ProductDetails.jsp?id=<%= p.getId()%>" class="product-link">
+                        <div class="product-image-container">
+                            <img src="<%= request.getContextPath() + "/" + p.getImage()%>" 
+                                 alt="<%= p.getName()%>" class="product-image">
+                            <!-- New overlay description that shows on hover -->
+                            <div class="image-overlay">
+                                <div class="overlay-content">
+                                    <div class="overlay-title"><%= p.getName()%></div>
+                                    <%= p.getDescription()%>
+                                </div>
+                            </div>
+                        </div>
                         <div class="product-info">
-                            <h3 class="product-title"><%= p.getName() %></h3>
-                            <div class="product-price">RM <%= String.format("%.2f", p.getPrice()) %></div>
-                            <div class="product-quantity">Available: <%= p.getQuantity() %></div>
-                            <div class="product-description"><%= p.getDescription() %></div>
+                            <h3 class="product-title"><%= p.getName()%></h3>
+                            <div class="product-price">RM <%= String.format("%.2f", p.getPrice())%></div>
+                            <div class="product-quantity">Available: <%= p.getQuantity()%></div>
                         </div>
                     </a>
                     <div class="product-actions">
                         <form method="post" action="add-to-cart">
-                            <input type="hidden" name="productId" value="<%= p.getId() %>">
-                            <input type="number" name="quantity" min="1" max="<%= p.getQuantity() %>" 
+                            <input type="hidden" name="productId" value="<%= p.getId()%>">
+                            <input type="number" name="quantity" min="1" max="<%= p.getQuantity()%>" 
                                    value="1" class="quantity-input">
                             <button type="submit" class="add-to-cart">Add to Cart</button>
                         </form>
@@ -153,79 +169,162 @@
                 <p>No product information</p>
                 <p>Please try again or contact the administrator</p>
             </div>
-            <% } %>
+            <% }%>
         </div>
-        
+
         <!-- FOOTER -->
         <div class="footer">
-          <div class="contain">
-            <div class="col">
-              <h1>Company</h1>
-              <ul>
-                <li>About</li>
-                <li>Mission</li>
-                <li>Services</li>
-                <li>Social</li>
-                <li>Get in touch</li>
-              </ul>
+            <div class="contain">
+                <div class="col">
+                    <h1>Company</h1>
+                    <ul>
+                        <li>About</li>
+                        <li>Mission</li>
+                        <li>Services</li>
+                        <li>Social</li>
+                        <li>Get in touch</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h1>Products</h1>
+                    <ul>
+                        <li>About</li>
+                        <li>Mission</li>
+                        <li>Services</li>
+                        <li>Social</li>
+                        <li>Get in touch</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h1>Accounts</h1>
+                    <ul>
+                        <li>About</li>
+                        <li>Mission</li>
+                        <li>Services</li>
+                        <li>Social</li>
+                        <li>Get in touch</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h1>Resources</h1>
+                    <ul>
+                        <li>Webmail</li>
+                        <li>Redeem code</li>
+                        <li>WHOIS lookup</li>
+                        <li>Site map</li>
+                        <li>Web templates</li>
+                        <li>Email templates</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h1>Support</h1>
+                    <ul>
+                        <li>Contact us</li>
+                    </ul>
+                </div>
+                <div class="col social">
+                    <h1>Social</h1>
+                    <ul>
+                        <li>
+                            <a href="https://www.instagram.com/">
+                                <img src="Images/IG.png" width="32" style="width: 25px; border-radius: 40%;">
+                            </a>
+                        </li>       
+                        <li>
+                            <a href="https://www.facebook.com/">
+                                <img src="Images/FB.png" width="32" style="width: 25px; border-radius: 40%;">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clearfix"></div>
+                <footer>
+                    <p>&copy;2025 PocketGadget. All rights reserved.</p>
+                </footer>
             </div>
-            <div class="col">
-              <h1>Products</h1>
-              <ul>
-                <li>About</li>
-                <li>Mission</li>
-                <li>Services</li>
-                <li>Social</li>
-                <li>Get in touch</li>
-              </ul>
-            </div>
-            <div class="col">
-              <h1>Accounts</h1>
-              <ul>
-                <li>About</li>
-                <li>Mission</li>
-                <li>Services</li>
-                <li>Social</li>
-                <li>Get in touch</li>
-              </ul>
-            </div>
-            <div class="col">
-              <h1>Resources</h1>
-              <ul>
-                <li>Webmail</li>
-                <li>Redeem code</li>
-                <li>WHOIS lookup</li>
-                <li>Site map</li>
-                <li>Web templates</li>
-                <li>Email templates</li>
-              </ul>
-            </div>
-            <div class="col">
-              <h1>Support</h1>
-              <ul>
-                <li>Contact us</li>
-              </ul>
-            </div>
-            <div class="col social">
-              <h1>Social</h1>
-              <ul>
-                <li>
-                  <a href="https://www.instagram.com/">
-                    <img src="Images/IG.png" width="32" style="width: 25px; border-radius: 40%;">
-                  </a>
-                </li>       
-                <li>
-                  <a href="https://www.facebook.com/">
-                    <img src="Images/FB.png" width="32" style="width: 25px; border-radius: 40%;">
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div class="clearfix"></div>
-            <footer>
-              <p>&copy;2025 PocketGadget. All rights reserved.</p>
-            </footer>
-          </div>
         </div>
+
+        <!-- JavaScript for product description modals -->
+        <script>
+            // Put all product descriptions in a single global variable
+            const productDescriptions = {};
+            
+            <% if (products != null && !products.isEmpty()) {
+                for (Product p : products) { %>
+                    // Store each product description separately
+                    productDescriptions['<%= p.getId() %>'] = {
+                        id: '<%= p.getId() %>',
+                        name: '<%= p.getName() %>',
+                        description: '<%= p.getDescription().replace("'", "\\'").replace("\n", " ") %>'
+                    };
+            <% } 
+            } %>
+            
+            // Setup modal once on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                // Create a single modal for all products
+                const modalTemplate = `
+                    <div id="product-description-modal" class="product-description-modal" style="display:none">
+                        <div class="description-content">
+                            <h3 id="modal-title" class="description-title"></h3>
+                            <div id="modal-text" class="description-text"></div>
+                            <button id="close-modal" class="close-description">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add modal to body
+                document.body.insertAdjacentHTML('beforeend', modalTemplate);
+                
+                // Get modal elements
+                const modal = document.getElementById('product-description-modal');
+                const modalTitle = document.getElementById('modal-title');
+                const modalText = document.getElementById('modal-text');
+                const closeBtn = document.getElementById('close-modal');
+                
+                // Setup click handlers for all description buttons
+                document.querySelectorAll('.description-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const productId = this.getAttribute('data-product-id');
+                        const product = productDescriptions[productId];
+                        
+                        if (product) {
+                            // Populate and show modal
+                            modalTitle.textContent = product.name;
+                            modalText.textContent = product.description;
+                            modal.style.display = 'flex';
+                            document.body.style.overflow = 'hidden';
+                        }
+                    });
+                });
+                
+                // Close modal on button click
+                closeBtn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                });
+                
+                // Close modal when clicking outside content
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }
+                });
+                
+                // Close modal with Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.style.display === 'flex') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

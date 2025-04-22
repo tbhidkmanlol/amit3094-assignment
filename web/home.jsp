@@ -26,7 +26,20 @@
     <nav class="navbar">
       <ul>
         <li><a href="CartController">Products</a></li>
-        <li><a href="#">Cart</a></li>
+        <li><a href="cart.jsp" style="position: relative;">Cart
+                <% 
+                    // Only show cart badge for regular users who are logged in
+                    if (session.getAttribute("user") != null && "USER".equals(session.getAttribute("role"))) { 
+                        Integer navCartCount = (Integer) session.getAttribute("cartCount");
+                        if (navCartCount != null && navCartCount > 0) { 
+                %>
+                    <span class="cart-badge"><%= navCartCount %></span>
+                <% 
+                        }
+                    } 
+                %>
+            </a>
+        </li>
         <li><a href="#">About Us</a></li>
         <li><a href="#">Contact Us</a></li>
         
@@ -93,8 +106,19 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="cart.jsp" style="position: relative;">
                     <i class="fas fa-shopping-cart"></i>
+                    <% 
+                        // Only show cart badge for regular users who are logged in
+                        if (session.getAttribute("user") != null && "USER".equals(session.getAttribute("role"))) { 
+                            Integer rightMenuCartCount = (Integer) session.getAttribute("cartCount");
+                            if (rightMenuCartCount != null && rightMenuCartCount > 0) { 
+                    %>
+                        <span class="cart-badge"><%= rightMenuCartCount %></span>
+                    <% 
+                            }
+                        } 
+                    %>
                 </a>
             </li>
         </ul>

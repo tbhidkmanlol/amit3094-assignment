@@ -4,67 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Register - PocketGadget</title>
+    <title>Login / Register - Cyberpunk Tech</title>
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        /* Video background styles */
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -3;
-            overflow: hidden;
-        }
-        
-        .video-background video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            max-width: 1920px; /* Limit to 1080p width */
-            max-height: 1080px; /* Limit to 1080p height */
-            transform: translateX(-50%) translateY(-50%);
-            object-fit: cover;
-            filter: contrast(1.05) brightness(1.05);
-            /* Add optimization for CPU usage */
-            will-change: transform; /* Hint for browser optimization */
-        }
-        
-        /* Add an overlay to ensure form readability */
-        .video-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); /* Moderate transparency for dark theme */
-            z-index: -2;
-            backdrop-filter: blur(0px); /* Remove blur for clearer video */
-        }
-        
-        html.light-theme .video-overlay {
-            background-color: rgba(0, 0, 0, 0.2); /* Lighter overlay for light theme */
-        }
-    </style>
 </head>
 <body>
     <!-- Video Background -->
-    <div class="video-background">
-        <video autoplay loop muted playsinline>
-            <source src="Images/loginBackground.mp4" type="video/mp4">
-            <!-- Fallback if video doesn't load -->
-            Your browser does not support the video tag.
-        </video>
-    </div>
-    <div class="video-overlay"></div>
-
+    <video autoplay muted loop id="background-video">
+        <source src="Images/loginBackground.mp4" type="video/mp4">
+    </video>
+    
     <!-- Background Elements -->
     <div class="background-elements">
         <div class="cyber-grid"></div>
@@ -130,7 +80,6 @@
                 <% } %>
 
                 <form action="auth/login" method="post">
-                    <input type="hidden" name="redirect" value="home.jsp">
                     <div class="cyber-input-group">
                         <i class="fas fa-user cyber-input-icon"></i>
                         <input type="text" name="username" class="cyber-input" placeholder="Username" required>
@@ -178,7 +127,6 @@
             <!-- Register Form -->
             <div id="register-form" class="form-container hidden">
                 <form action="auth/register" method="post" id="registration-form">
-                    <input type="hidden" name="redirect" value="home.jsp">
                     <div class="cyber-input-group">
                         <i class="fas fa-user cyber-input-icon"></i>
                         <input type="text" name="username" class="cyber-input" placeholder="Username" required>
@@ -237,12 +185,6 @@
                         <i class="fas fa-arrow-left"></i> Return to Main Grid
                     </a>
                 </div>
-                
-                <!-- Hidden form to redirect after login -->
-                <form id="redirect-form" action="home.jsp" method="get" style="display:none;">
-                    <input type="hidden" name="login_success" value="true">
-                </form>
-
                 <button id="theme-toggle" class="theme-toggle">
                     <i class="fas fa-moon"></i>
                     <span class="theme-text">Dark Mode</span>
@@ -313,14 +255,6 @@
                 }
             });
 
-            // Handle URL hash for direct access to registration form
-            if (window.location.hash === '#register' || sessionStorage.getItem('showRegisterTab') === 'true') {
-                // Show the registration form
-                registerToggle.click();
-                // Clear the session storage flag
-                sessionStorage.removeItem('showRegisterTab');
-            }
-
             // Theme toggle functionality
             const themeToggle = document.getElementById('theme-toggle');
             const themeIcon = themeToggle.querySelector('i');
@@ -380,17 +314,6 @@
             
             // Random glitch intervals
             setInterval(randomGlitch, 3000 + Math.random() * 5000);
-            
-            // Handle URL hash for direct access to registration form
-            if (window.location.hash === '#register' || sessionStorage.getItem('showRegisterTab') === 'true') {
-                // Show the registration form
-                registerToggle.click();
-                // Clear the session storage flag
-                sessionStorage.removeItem('showRegisterTab');
-            }
-            
-            // Remove the form submission override that's blocking login
-            // We'll let the regular form submission work with the redirect parameter
         });
     </script>
 </body>
