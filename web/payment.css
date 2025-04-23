@@ -258,12 +258,12 @@ select:focus {
     font-size: 24px;
     color: var(--text-color);
     margin-bottom: 10px;
-    transition: var (--transition);
+    transition: var(--transition);
 }
 
 .payment-option span {
     font-size: 14px;
-    color: var (--text-color);
+    color: var(--text-color);
 }
 
 .payment-option:hover {
@@ -277,7 +277,7 @@ select:focus {
 }
 
 .payment-option.active i {
-    color: var (--primary-color);
+    color: var(--primary-color);
 }
 
 /* Card Details Styling */

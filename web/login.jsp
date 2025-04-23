@@ -189,10 +189,10 @@
                     <div id="confirmation-section" class="hidden">
                         <h3 class="cyber-text">Confirm Your Details</h3>
                         <div class="confirmation-details">
-                            <p><strong>Full Name:</strong> <span id="confirm-name"></span></p>
-                            <p><strong>Contact Number:</strong> <span id="confirm-phone"></span></p>
-                            <p><strong>Email:</strong> <span id="confirm-email"></span></p>
-                            <p><strong>Username:</strong> <span id="confirm-username"></span></p>
+                            <p><strong>Full Name:      </strong> <span id="confirm-name"></span></p>
+                            <p><strong>Contact Number: </strong> <span id="confirm-phone"></span></p>
+                            <p><strong>Email:          </strong> <span id="confirm-email"></span></p>
+                            <p><strong>Username:       </strong> <span id="confirm-username"></span></p>
                         </div>
                         <div class="confirmation-buttons">
                             <button type="submit" class="cyber-button">
