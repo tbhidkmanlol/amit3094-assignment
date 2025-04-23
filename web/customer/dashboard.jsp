@@ -266,14 +266,31 @@
                 <h3>My Profile</h3>
                 <p>View and manage your personal information.</p>
                 
-                <div class="form-group">
-                    <label>Username</label>
-                    <p><%= user.getUsername() %></p>
-                </div>
-                
-                <div class="form-group">
-                    <label>Account Type</label>
-                    <p>Customer</p>
+                <div class="profile-details">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <p class="profile-value"><%= user.getUsername() %></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <p class="profile-value"><%= user.getCustomerName() != null ? user.getCustomerName() : "Not provided" %></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <p class="profile-value"><%= user.getContactNumber() != null ? user.getContactNumber() : "Not provided" %></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <p class="profile-value"><%= user.getEmail() != null ? user.getEmail() : "Not provided" %></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Account Type</label>
+                        <p class="profile-value">Customer</p>
+                    </div>
                 </div>
                 
                 <a href="?section=settings" class="btn"><i class='bx bx-cog'></i> Update Settings</a>

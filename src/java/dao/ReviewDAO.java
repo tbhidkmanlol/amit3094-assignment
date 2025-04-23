@@ -76,6 +76,13 @@ public class ReviewDAO {
                 review.setReviewDate(rs.getTimestamp("REVIEW_DATE"));
                 review.setAdminReply(rs.getString("ADMIN_REPLY"));
                 review.setReplyDate(rs.getTimestamp("REPLY_DATE"));
+                // Check if RESPONDER_ROLE column exists and set it if it does
+                try {
+                    review.setResponderRole(rs.getString("RESPONDER_ROLE"));
+                } catch (SQLException e) {
+                    // Column doesn't exist yet, will be added later
+                    review.setResponderRole("Admin"); // Default for backward compatibility
+                }
                 reviews.add(review);
             }
         } catch (Exception e) {
@@ -86,17 +93,74 @@ public class ReviewDAO {
 
     // Add admin reply to a review
     public static boolean addAdminReply(int reviewId, String reply) {
+        return addAdminReply(reviewId, reply, "Admin");
+    }
+    
+    // Overloaded method to add admin reply with role
+    public static boolean addAdminReply(int reviewId, String reply, String responderRole) {
+        String sql = "UPDATE NBUSER.REVIEW SET ADMIN_REPLY = ?, REPLY_DATE = CURRENT_TIMESTAMP, RESPONDER_ROLE = ? WHERE REVIEW_ID = ?";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, reply);
+            stmt.setString(2, responderRole);
+            stmt.setInt(3, reviewId);
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            // If the RESPONDER_ROLE column doesn't exist yet, try to add it
+            if (e.getMessage().contains("RESPONDER_ROLE")) {
+                try {
+                    // First try to add the column
+                    addResponderRoleColumn();
+                    
+                    // Then try the update again
+                    try (Connection conn = DBConnection.getConnection(); 
+                         PreparedStatement stmt = conn.prepareStatement(sql)) {
+                        stmt.setString(1, reply);
+                        stmt.setString(2, responderRole);
+                        stmt.setInt(3, reviewId);
+                        return stmt.executeUpdate() > 0;
+                    }
+                } catch (Exception ex) {
+                    // If adding the column fails too, fall back to the old method
+                    return addAdminReplyLegacy(reviewId, reply);
+                }
+            } else {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    // Legacy method for backward compatibility
+    private static boolean addAdminReplyLegacy(int reviewId, String reply) {
         String sql = "UPDATE NBUSER.REVIEW SET ADMIN_REPLY = ?, REPLY_DATE = CURRENT_TIMESTAMP WHERE REVIEW_ID = ?";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, reply);
             stmt.setInt(2, reviewId);
-
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+    
+    // Add RESPONDER_ROLE column to the REVIEW table if it doesn't exist
+    private static void addResponderRoleColumn() {
+        String sql = "ALTER TABLE NBUSER.REVIEW ADD COLUMN RESPONDER_ROLE VARCHAR(20)";
+        try (Connection conn = DBConnection.getConnection(); 
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+            
+            // Set default values for existing records
+            String updateSql = "UPDATE NBUSER.REVIEW SET RESPONDER_ROLE = 'Admin' WHERE ADMIN_REPLY IS NOT NULL";
+            stmt.executeUpdate(updateSql);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

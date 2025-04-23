@@ -4,7 +4,8 @@
     Object userObj = session.getAttribute("user");
     model.User user = (userObj != null) ? (model.User)userObj : null;
     
-    if (user == null || !"ADMIN".equalsIgnoreCase(user.getRole())) {
+    // Allow both ADMIN and MANAGER roles to access this page
+    if (user == null || (!"ADMIN".equalsIgnoreCase(user.getRole()) && !"MANAGER".equalsIgnoreCase(user.getRole()))) {
         response.sendRedirect(request.getContextPath() + "/login.jsp");
         return;
     }
@@ -86,7 +87,7 @@
                             <% if (review.getAdminReply() != null) { %>
                                 <div class="existing-reply">
                                     <div class="admin-reply">
-                                        <strong><i class="fas fa-shield-alt"></i> Admin:</strong> 
+                                        <strong><i class="fas fa-shield-alt"></i> <%= review.getResponderRole() != null ? review.getResponderRole() : "Admin" %>:</strong> 
                                         <%= review.getAdminReply() %>
                                     </div>
                                     <div class="reply-date">

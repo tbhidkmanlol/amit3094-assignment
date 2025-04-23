@@ -341,6 +341,7 @@
                 <h3>Admin Management</h3>
                 <p>Create and manage admin accounts for your e-commerce platform.</p>
                 <a href="create-admin.jsp" class="btn"><i class='bx bx-user-plus'></i> Create New Admin Account</a>
+                <a href="../AdminReviews.jsp" class="btn"><i class='bx bx-star'></i> Manage Reviews</a>
             </div>
         </div>
         
