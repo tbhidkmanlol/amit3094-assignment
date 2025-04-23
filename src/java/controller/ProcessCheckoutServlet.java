@@ -15,13 +15,48 @@ import java.io.IOException;
 public class ProcessCheckoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Here you would typically:
-        // 1. Process the payment
-        // 2. Save the order to database
-        // 3. Clear the cart
-        // 4. Redirect to order confirmation page
+        // Get all form parameters
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+        String address = request.getParameter("address");
+        String apartment = request.getParameter("apartment");
+        String city = request.getParameter("city");
+        String state = request.getParameter("state");
+        String postalCode = request.getParameter("postalCode");
+        String country = request.getParameter("country");
+        String shippingOption = request.getParameter("shippingOption");
         
-        // For now, just redirect to a confirmation page
-        response.sendRedirect("order-confirmation.jsp");
+        // Get payment details
+        String merchandiseSubtotal = request.getParameter("merchandiseSubtotal");
+        String shippingSubtotal = request.getParameter("shippingSubtotal");
+        String shippingSST = request.getParameter("shippingSST");
+        String totalPayment = request.getParameter("totalPayment");
+        
+        // Store shipping address in session for later use
+        request.getSession().setAttribute("shippingAddress", address);
+        request.getSession().setAttribute("shippingCity", city);
+        request.getSession().setAttribute("shippingState", state);
+        request.getSession().setAttribute("shippingPostalCode", postalCode);
+        request.getSession().setAttribute("shippingOption", shippingOption);
+        
+        // Forward all parameters to payment page
+        StringBuilder redirectURL = new StringBuilder("payment.jsp?");
+        redirectURL.append("firstName=").append(firstName)
+                   .append("&lastName=").append(lastName)
+                   .append("&email=").append(email)
+                   .append("&address=").append(address)
+                   .append("&city=").append(city)
+                   .append("&state=").append(state)
+                   .append("&postalCode=").append(postalCode)
+                   .append("&country=").append(country)
+                   .append("&shippingOption=").append(shippingOption)
+                   .append("&merchandiseSubtotal=").append(merchandiseSubtotal)
+                   .append("&shippingSubtotal=").append(shippingSubtotal)
+                   .append("&shippingSST=").append(shippingSST)
+                   .append("&totalPayment=").append(totalPayment);
+        
+        // Redirect to payment page with all parameters
+        response.sendRedirect(redirectURL.toString());
     }
 }
