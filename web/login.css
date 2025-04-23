@@ -39,6 +39,19 @@ html.light-theme {
     --border-glow: 0 0 3px rgba(255, 0, 0, 0.3), 0 0 5px rgba(255, 69, 0, 0.2);
 }
 
+/* Background Video Styling */
+#background-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    filter: brightness(0.7) contrast(1.1);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -55,23 +68,9 @@ body {
     align-items: center;
     overflow-x: hidden;
     position: relative;
-    /* Updated to use the video background instead */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-}
-
-#background-video {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -10;
-    object-fit: cover;
-    filter: brightness(0.5) contrast(1.1);
 }
 
 body::before {

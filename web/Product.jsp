@@ -13,44 +13,85 @@
         <script src="theme.js" defer></script>
     </head>
     <body>
-        <!-- Header Section with theme-specific data attribute -->
         <header class="header" data-theme-target="header">
             <div class="left-section">
-                <div class="logo">
-                    <a href="home.jsp" style="display: block;">
-                        <img src="Images/logo.png" alt="Logo" />
-                    </a>
-                </div>
-                <div class="brand">
-                    <h1><a href="home.jsp" style="text-decoration: none; color: inherit;">PocketGadget</a></h1>
-                </div>
+              <div class="logo">
+                <a href="home.jsp" style="display: block;">
+                  <img src="Images/logo.png" alt="Logo" />
+                </a>
+              </div>
+              <div class="brand">
+                <h1><a href="home.jsp" style="text-decoration: none; color: inherit;">PocketGadget</a></h1>
+              </div>
             </div>
-
+        
             <nav class="navbar">
-                <ul>
-                    <li><a href="CartController">Products</a></li>
-                    <li><a href="cart.jsp" style="position: relative;">Cart
-                            <%
+              <ul>
+                <li><a href="CartController">Products</a></li>
+                <li><a href="cart.jsp" style="position: relative;">Cart
+                        <% 
+                            // Only show cart badge for regular users who are logged in
+                            if (session.getAttribute("user") != null && "USER".equals(session.getAttribute("role"))) { 
                                 Integer navCartCount = (Integer) session.getAttribute("cartCount");
-                                if (navCartCount != null && navCartCount > 0) {
-                            %>
-                            <span class="cart-badge" style="top: -10px; right: -10px;"><%= navCartCount%></span>
-                            <% } %>
-                        </a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="login.jsp">Login / Register</a></li>
-                    <li><a href="#">Account</a></li>
-                    <li><a href="#"><i class="bx bx-search"></i></a></li>
-                    <li>
-                        <button id="theme-toggle" class="theme-toggle">
-                            <i class="bx bx-moon"></i>
-                            <span class="theme-text">Light Mode</span>
-                        </button>
-                    </li>
-                </ul>
+                                if (navCartCount != null && navCartCount > 0) { 
+                        %>
+                            <span class="cart-badge"><%= navCartCount %></span>
+                        <% 
+                                }
+                            } 
+                        %>
+                    </a>
+                </li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact Us</a></li>
+                
+                <!-- Account Dropdown - Changes based on login status -->
+                <li class="account-dropdown">
+                  <% if (session.getAttribute("user") != null) { 
+                       String username = (String)session.getAttribute("username");
+                       String role = (String)session.getAttribute("role");
+                  %>
+                    <a href="#" class="dropdown-trigger">
+                      <i class="bx bx-user-circle"></i> Welcome, <%= username %> <i class="bx bx-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-content">
+                      <% if ("ADMIN".equals(role)) { %>
+                        <a href="home.jsp"><i class="bx bx-home"></i> Home</a>
+                        <a href="admin/dashboard.jsp"><i class="bx bx-tachometer"></i> Admin Dashboard</a>
+                        <a href="admin/dashboard.jsp?section=settings"><i class="bx bx-cog"></i> Settings</a>
+                      <% } else if ("MANAGER".equals(role)) { %>
+                        <a href="home.jsp"><i class="bx bx-home"></i> Home</a>
+                        <a href="manager/dashboard.jsp"><i class="bx bx-tachometer"></i> Manager Dashboard</a>
+                        <a href="manager/dashboard.jsp?section=settings"><i class="bx bx-cog"></i> Settings</a>
+                      <% } else { %>
+                        <a href="home.jsp"><i class="bx bx-home"></i> Home</a>
+                        <a href="customer/dashboard.jsp"><i class="bx bx-user"></i> My Account</a>
+                        <a href="#"><i class="bx bx-package"></i> My Orders</a>
+                        <a href="customer/dashboard.jsp?section=settings"><i class="bx bx-cog"></i> Settings</a>
+                      <% } %>
+                      <a href="auth/logout" class="logout-link"><i class="bx bx-log-out"></i> Sign Out</a>
+                    </div>
+                  <% } else { %>
+                    <a href="#" class="dropdown-trigger">
+                      <i class="bx bx-user"></i> Account <i class="bx bx-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-content">
+                      <a href="login.jsp"><i class="bx bx-log-in"></i> Login</a>
+                      <a href="login.jsp#register"><i class="bx bx-user-plus"></i> Register</a>
+                    </div>
+                  <% } %>
+                </li>
+                
+                <li><a href="#"><i class="bx bx-search"></i></a></li>
+                <li>
+                  <button id="theme-toggle" class="theme-toggle">
+                    <i class="bx bx-moon"></i>
+                    <span class="theme-text">Switch Theme</span>
+                  </button>
+                </li>
+              </ul>
             </nav>
-        </header>
+          </header>
 
         <div class="content-container">
             <div class="product-header">

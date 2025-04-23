@@ -51,10 +51,23 @@
 
             <!-- Login Form -->
             <div id="login-form" class="form-container">
-                <% if (request.getParameter("error") != null) { %>
+                <% if (request.getParameter("error") != null) { 
+                    String errorType = request.getParameter("error");
+                    String errorMessage = "Invalid username or password. Please try again.";
+                    
+                    if ("username_taken".equals(errorType)) {
+                        errorMessage = "Username already exists. Please choose another one.";
+                    } else if ("registration".equals(errorType)) {
+                        errorMessage = "Registration failed. Please try again.";
+                    } else if ("system".equals(errorType)) {
+                        errorMessage = "System error occurred. Please try again later.";
+                    } else if ("unauthorized".equals(errorType)) {
+                        errorMessage = "Unauthorized access. Please log in with proper credentials.";
+                    }
+                %>
                 <div class="cyber-alert">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <span>Invalid username or password. Please try again.</span>
+                    <span><%= errorMessage %></span>
                 </div>
                 <% } %>
                 
@@ -128,52 +141,81 @@
             <div id="register-form" class="form-container hidden">
                 <form action="auth/register" method="post" id="registration-form">
                     <div class="cyber-input-group">
-                        <i class="fas fa-user cyber-input-icon"></i>
-                        <input type="text" name="username" class="cyber-input" placeholder="Username" required>
-                        <span class="cyber-input-border"></span>
-                    </div>
-
-                    <div class="cyber-input-group">
-                        <i class="fas fa-envelope cyber-input-icon"></i>
-                        <input type="email" name="email" class="cyber-input" placeholder="Email Address" required>
-                        <span class="cyber-input-border"></span>
-                    </div>
-                    
-                    <div class="cyber-input-group">
                         <i class="fas fa-id-card cyber-input-icon"></i>
-                        <input type="text" name="fullName" class="cyber-input" placeholder="Full Name" required>
+                        <input type="text" name="fullName" id="fullName" class="cyber-input" placeholder="Full Name" required>
                         <span class="cyber-input-border"></span>
+                        <div class="input-feedback" id="name-feedback"></div>
                     </div>
                     
                     <div class="cyber-input-group">
                         <i class="fas fa-phone cyber-input-icon"></i>
-                        <input type="tel" name="phone" class="cyber-input" placeholder="Phone Number" required>
+                        <input type="tel" name="phone" id="phone" class="cyber-input" placeholder="Contact Number" 
+                               pattern="[0-9]{10,15}" title="Phone number should be between 10-15 digits" required>
                         <span class="cyber-input-border"></span>
+                        <div class="input-feedback" id="phone-feedback"></div>
+                    </div>
+                    
+                    <div class="cyber-input-group">
+                        <i class="fas fa-envelope cyber-input-icon"></i>
+                        <input type="email" name="email" id="email" class="cyber-input" placeholder="Email Address" required>
+                        <span class="cyber-input-border"></span>
+                        <div class="input-feedback" id="email-feedback"></div>
+                    </div>
+                    
+                    <div class="cyber-input-group">
+                        <i class="fas fa-user cyber-input-icon"></i>
+                        <input type="text" name="username" id="reg-username" class="cyber-input" placeholder="Username" 
+                               pattern=".{5,50}" title="Username should be between 5-50 characters" required>
+                        <span class="cyber-input-border"></span>
+                        <div class="input-feedback" id="username-feedback"></div>
                     </div>
 
                     <div class="cyber-input-group">
                         <i class="fas fa-lock cyber-input-icon"></i>
-                        <input type="password" name="password" id="password" class="cyber-input" placeholder="Password" required>
+                        <input type="password" name="password" id="password" class="cyber-input" placeholder="Password" 
+                               pattern=".{8,50}" title="Password should be at least 8 characters" required>
                         <span class="cyber-input-border"></span>
+                        <div class="input-feedback" id="password-feedback"></div>
                     </div>
 
                     <div class="cyber-input-group">
                         <i class="fas fa-check-circle cyber-input-icon"></i>
                         <input type="password" id="confirm_password" class="cyber-input" placeholder="Confirm Password" required>
                         <span class="cyber-input-border"></span>
-                        <div class="password-feedback" id="password-feedback"></div>
+                        <div class="input-feedback" id="confirm-password-feedback"></div>
                     </div>
 
-                    <div class="terms-group">
+                    <!-- Confirmation Section -->
+                    <div id="confirmation-section" class="hidden">
+                        <h3 class="cyber-text">Confirm Your Details</h3>
+                        <div class="confirmation-details">
+                            <p><strong>Full Name:</strong> <span id="confirm-name"></span></p>
+                            <p><strong>Contact Number:</strong> <span id="confirm-phone"></span></p>
+                            <p><strong>Email:</strong> <span id="confirm-email"></span></p>
+                            <p><strong>Username:</strong> <span id="confirm-username"></span></p>
+                        </div>
+                        <div class="confirmation-buttons">
+                            <button type="button" id="edit-details-btn" class="cyber-button secondary">
+                                <span class="cyber-button-text">EDIT DETAILS</span>
+                                <span class="cyber-button-glitch"></span>
+                            </button>
+                            <button type="submit" class="cyber-button">
+                                <span class="cyber-button-text">CONFIRM REGISTER</span>
+                                <span class="cyber-button-glitch"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="terms-group" id="terms-group">
                         <label class="cyber-checkbox">
-                            <input type="checkbox" name="terms" required>
+                            <input type="checkbox" name="terms" id="terms" required>
                             <span class="checkmark"></span>
                             I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
                         </label>
                     </div>
 
-                    <button type="submit" class="cyber-button" id="register-button">
-                        <span class="cyber-button-text">CREATE IDENTITY</span>
+                    <button type="button" id="verify-button" class="cyber-button">
+                        <span class="cyber-button-text">VERIFY DETAILS</span>
                         <span class="cyber-button-glitch"></span>
                     </button>
                 </form>
@@ -218,38 +260,164 @@
                 formTitle.textContent = 'Register';
             });
 
-            // Password confirmation check
+            // Enhanced customer registration with validation
+            const fullName = document.getElementById('fullName');
+            const phone = document.getElementById('phone');
+            const email = document.getElementById('email');
+            const regUsername = document.getElementById('reg-username');
             const password = document.getElementById('password');
             const confirmPassword = document.getElementById('confirm_password');
+            const verifyButton = document.getElementById('verify-button');
+            const confirmationSection = document.getElementById('confirmation-section');
+            const termsGroup = document.getElementById('terms-group');
+            const editDetailsBtn = document.getElementById('edit-details-btn');
+            
+            // Input validation feedback elements
+            const nameFeedback = document.getElementById('name-feedback');
+            const phoneFeedback = document.getElementById('phone-feedback');
+            const emailFeedback = document.getElementById('email-feedback');
+            const usernameFeedback = document.getElementById('username-feedback');
             const passwordFeedback = document.getElementById('password-feedback');
-            const registerButton = document.getElementById('register-button');
-
-            function checkPasswords() {
+            const confirmPasswordFeedback = document.getElementById('confirm-password-feedback');
+            
+            // Confirmation display elements
+            const confirmName = document.getElementById('confirm-name');
+            const confirmPhone = document.getElementById('confirm-phone');
+            const confirmEmail = document.getElementById('confirm-email');
+            const confirmUsername = document.getElementById('confirm-username');
+            
+            // Input validation functions
+            function validateName() {
+                if (fullName.value.length < 2) {
+                    nameFeedback.textContent = 'Name must be at least 2 characters';
+                    nameFeedback.className = 'input-feedback error';
+                    return false;
+                } else {
+                    nameFeedback.textContent = 'Valid name';
+                    nameFeedback.className = 'input-feedback match';
+                    return true;
+                }
+            }
+            
+            function validatePhone() {
+                const phoneRegex = /^[0-9]{10,15}$/;
+                if (!phoneRegex.test(phone.value)) {
+                    phoneFeedback.textContent = 'Phone must be 10-15 digits';
+                    phoneFeedback.className = 'input-feedback error';
+                    return false;
+                } else {
+                    phoneFeedback.textContent = 'Valid phone number';
+                    phoneFeedback.className = 'input-feedback match';
+                    return true;
+                }
+            }
+            
+            function validateEmail() {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    emailFeedback.textContent = 'Please enter a valid email';
+                    emailFeedback.className = 'input-feedback error';
+                    return false;
+                } else {
+                    emailFeedback.textContent = 'Valid email address';
+                    emailFeedback.className = 'input-feedback match';
+                    return true;
+                }
+            }
+            
+            function validateUsername() {
+                if (regUsername.value.length < 5) {
+                    usernameFeedback.textContent = 'Username must be at least 5 characters';
+                    usernameFeedback.className = 'input-feedback error';
+                    return false;
+                } else {
+                    usernameFeedback.textContent = 'Valid username';
+                    usernameFeedback.className = 'input-feedback match';
+                    return true;
+                }
+            }
+            
+            function validatePassword() {
+                if (password.value.length < 8) {
+                    passwordFeedback.textContent = 'Password must be at least 8 characters';
+                    passwordFeedback.className = 'input-feedback error';
+                    return false;
+                } else {
+                    passwordFeedback.textContent = 'Valid password';
+                    passwordFeedback.className = 'input-feedback match';
+                    return true;
+                }
+            }
+            
+            function validateConfirmPassword() {
                 if (confirmPassword.value === '') {
-                    passwordFeedback.textContent = '';
-                    passwordFeedback.className = 'password-feedback';
+                    confirmPasswordFeedback.textContent = '';
+                    confirmPasswordFeedback.className = 'input-feedback';
                     return false;
                 } else if (password.value === confirmPassword.value) {
-                    passwordFeedback.textContent = 'Identities match';
-                    passwordFeedback.className = 'password-feedback match';
+                    confirmPasswordFeedback.textContent = 'Passwords match';
+                    confirmPasswordFeedback.className = 'input-feedback match';
                     return true;
                 } else {
-                    passwordFeedback.textContent = 'Identities do not match';
-                    passwordFeedback.className = 'password-feedback no-match';
+                    confirmPasswordFeedback.textContent = 'Passwords do not match';
+                    confirmPasswordFeedback.className = 'input-feedback error';
                     return false;
                 }
             }
-
-            confirmPassword.addEventListener('input', checkPasswords);
+            
+            // Add validation event listeners
+            fullName.addEventListener('input', validateName);
+            phone.addEventListener('input', validatePhone);
+            email.addEventListener('input', validateEmail);
+            regUsername.addEventListener('input', validateUsername);
             password.addEventListener('input', function() {
+                validatePassword();
                 if (confirmPassword.value !== '') {
-                    checkPasswords();
+                    validateConfirmPassword();
                 }
             });
+            confirmPassword.addEventListener('input', validateConfirmPassword);
+            
+            // Verification process
+            verifyButton.addEventListener('click', function() {
+                const isNameValid = validateName();
+                const isPhoneValid = validatePhone();
+                const isEmailValid = validateEmail();
+                const isUsernameValid = validateUsername();
+                const isPasswordValid = validatePassword();
+                const isConfirmPasswordValid = validateConfirmPassword();
+                const isTermsChecked = document.getElementById('terms').checked;
+                
+                if (isNameValid && isPhoneValid && isEmailValid && isUsernameValid 
+                    && isPasswordValid && isConfirmPasswordValid && isTermsChecked) {
+                    
+                    // Show confirmation section
+                    confirmName.textContent = fullName.value;
+                    confirmPhone.textContent = phone.value;
+                    confirmEmail.textContent = email.value;
+                    confirmUsername.textContent = regUsername.value;
+                    
+                    verifyButton.classList.add('hidden');
+                    termsGroup.classList.add('hidden');
+                    confirmationSection.classList.remove('hidden');
+                } else {
+                    // Highlight any missing fields
+                    if (!isTermsChecked) {
+                        alert('Please accept the Terms and Conditions');
+                    }
+                }
+            });
+            
+            // Edit details button functionality
+            editDetailsBtn.addEventListener('click', function() {
+                confirmationSection.classList.add('hidden');
+                verifyButton.classList.remove('hidden');
+                termsGroup.classList.remove('hidden');
+            });
 
-            // Registration form validation
+            // Registration form submission
             document.getElementById('registration-form').addEventListener('submit', function(event) {
-                if (!checkPasswords()) {
+                if (!validateConfirmPassword()) {
                     event.preventDefault();
                     confirmPassword.focus();
                 }
