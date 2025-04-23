@@ -541,7 +541,6 @@ gap: 10px;
   height: auto;
   background-color: #1a1a1a;
   margin-top: 20px;
-  /* Center the footer content */
   display: flex;
   justify-content: center;
   transition: background-color 0.3s ease;
@@ -562,7 +561,7 @@ html.light-theme .footer {
 .footer footer {
   text-align: center;
   padding: 20px;
-  margin-right: 0; /* Fixed incorrect margin */
+  margin-left:20px;
 }
 
 .footer .col {
