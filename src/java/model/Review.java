@@ -13,6 +13,7 @@ public class Review {
     private Timestamp reviewDate;
     private String adminReply;
     private Timestamp replyDate;
+    private String responderRole; // New field to track who replied
 
     // Getters and setters
     public int getReviewId() {
@@ -77,5 +78,13 @@ public class Review {
 
     public void setReplyDate(Timestamp replyDate) {
         this.replyDate = replyDate;
+    }
+
+    public String getResponderRole() {
+        return responderRole;
+    }
+
+    public void setResponderRole(String responderRole) {
+        this.responderRole = responderRole;
     }
 }

@@ -195,10 +195,6 @@
                             <p><strong>Username:</strong> <span id="confirm-username"></span></p>
                         </div>
                         <div class="confirmation-buttons">
-                            <button type="button" id="edit-details-btn" class="cyber-button secondary">
-                                <span class="cyber-button-text">EDIT DETAILS</span>
-                                <span class="cyber-button-glitch"></span>
-                            </button>
                             <button type="submit" class="cyber-button">
                                 <span class="cyber-button-text">CONFIRM REGISTER</span>
                                 <span class="cyber-button-glitch"></span>
@@ -270,7 +266,6 @@
             const verifyButton = document.getElementById('verify-button');
             const confirmationSection = document.getElementById('confirmation-section');
             const termsGroup = document.getElementById('terms-group');
-            const editDetailsBtn = document.getElementById('edit-details-btn');
             
             // Input validation feedback elements
             const nameFeedback = document.getElementById('name-feedback');
@@ -408,14 +403,8 @@
                 }
             });
             
-            // Edit details button functionality
-            editDetailsBtn.addEventListener('click', function() {
-                confirmationSection.classList.add('hidden');
-                verifyButton.classList.remove('hidden');
-                termsGroup.classList.remove('hidden');
-            });
-
-            // Registration form submission
+            // Remove reference to the edit details button which was deleted
+            // But keep the registration form submission validation
             document.getElementById('registration-form').addEventListener('submit', function(event) {
                 if (!validateConfirmPassword()) {
                     event.preventDefault();

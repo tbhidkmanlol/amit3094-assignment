@@ -40,6 +40,9 @@
     String state = request.getParameter("state") != null ? request.getParameter("state") : "";
     String postalCode = request.getParameter("postalCode") != null ? request.getParameter("postalCode") : "";
     String country = request.getParameter("country") != null ? request.getParameter("country") : "Malaysia";
+    
+    // Combine names for display
+    String fullName = firstName + " " + lastName;
 %>
 <!DOCTYPE html>
 <html>
@@ -48,22 +51,20 @@
     <title>Payment Page</title> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="payment.css">
 </head>
 <body>
     <!-- Theme Toggle Button -->
     <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">
-        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
     </button>
     
     <div class="payment-wrapper">
-        
-        <!-- LEFT SIDE: Billing & Payment -->
+        <!-- LEFT SIDE: Payment Information -->
         <div class="payment-container">
-            <h2>Payment</h2>
+            <h2>Payment Information</h2>
 
-            <!-- Billing Address -->
-            <h3>Billing Address</h3>
             <form action="ProcessPaymentServlet" method="post" id="paymentForm">
                 <!-- Hidden fields to carry forward checkout data -->
                 <input type="hidden" name="firstName" value="<%= firstName %>">
@@ -71,34 +72,38 @@
                 <input type="hidden" name="email" value="<%= email %>">
                 <input type="hidden" name="address" value="<%= address %>">
                 <input type="hidden" name="city" value="<%= city %>">
+                <input type="hidden" name="state" value="<%= state %>">
                 <input type="hidden" name="postalCode" value="<%= postalCode %>">
+                <input type="hidden" name="country" value="<%= country %>">
                 <input type="hidden" name="merchandiseSubtotal" value="<%= merchandiseSubtotal %>">
                 <input type="hidden" name="shippingSubtotal" value="<%= shippingSubtotal %>">
                 <input type="hidden" name="shippingSST" value="<%= shippingSST %>">
                 <input type="hidden" name="deliveryFee" value="<%= deliveryFee %>">
                 <input type="hidden" name="totalPayment" value="<%= totalPayment %>">
 
-                <div class="billing-address-grid">
-                    <div>
-                        <label for="country">Country</label>
-                        <input type="text" id="country" name="country" value="<%= country %>" readonly>
-                    </div>
-                    <div>
-                        <label for="state">State</label>
-                        <input type="text" id="state" name="state" value="<%= state %>" readonly>
-                    </div>
-                    <div>
-                        <label for="district">District</label>
-                        <input type="text" id="district" name="district" value="<%= city %>" readonly>
-                    </div>
-                    <div>
-                        <label for="postal">Postal Code</label>
-                        <input type="text" id="postal" name="postal" maxlength="5" value="<%= postalCode %>" readonly>
+                <!-- Billing Address Section -->
+                <div class="shipping-address-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Billing Address</h3>
+                    <div class="shipping-address-content">
+                        <div class="address-header">
+                            <span class="recipient-name"><%= fullName %></span>
+                            <span class="address-label">Default</span>
+                        </div>
+                        <div class="address-details">
+                            <%= address %><br>
+                            <%= city %>, <%= state %>, <%= postalCode %><br>
+                            <%= country %>
+                        </div>
+                        <div class="address-phone">
+                            <% if (email != null && !email.isEmpty()) { %>
+                                Email: <%= email %>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Payment Method -->
-                <label>Payment Method</label>
+                <div class="method-title"><i class="fas fa-credit-card"></i> Payment Method</div>
                 <div class="payment-method-buttons">
                     <div class="payment-option" data-method="cash">
                         <i class="fas fa-money-bill-wave"></i>
@@ -106,7 +111,7 @@
                     </div>
                     <div class="payment-option" data-method="creditCard">
                         <i class="fas fa-credit-card"></i>
-                        <span>Credit/Debit Card</span>
+                        <span>Credit Card</span>
                     </div>
                     <div class="payment-option" data-method="ewallet">
                         <i class="fas fa-wallet"></i>
@@ -117,7 +122,7 @@
                 <div class="validation-message" id="method-validation">Please select a payment method.</div>
 
                 <!-- Card Details Section - Initially Hidden -->
-                <div id="cardDetails" style="display: none;">
+                <div id="cardDetails">
                     <label for="cardType">Card Type</label>
                     <select id="cardType" name="cardType">
                         <option value="visa">Visa</option>
@@ -125,7 +130,7 @@
                         <option value="amex">American Express</option>
                     </select>
                    
-                    <label for="cardName">Cardholder Name (as it appears on card)</label>
+                    <label for="cardName">Cardholder Name</label>
                     <input type="text" id="cardName" name="cardName" placeholder="Name on card">
                     <div class="validation-message" id="cardName-validation">Please enter the name as it appears on the card.</div>
 
@@ -135,7 +140,7 @@
 
                     <div class="card-row">
                         <div class="card-col">
-                            <label for="expiry">Expiry Date (MM/YY)</label>
+                            <label for="expiry">Expiry Date</label>
                             <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)">
                             <div class="validation-message" id="expiry-validation">Please enter a valid expiry date.</div>
                         </div>
@@ -148,7 +153,7 @@
                 </div>
                 
                 <!-- E-Wallet Section - Initially Hidden -->
-                <div id="ewalletDetails" style="display: none;">
+                <div id="ewalletDetails">
                     <label for="walletType">E-Wallet Provider</label>
                     <select id="walletType" name="walletType">
                         <option value="grabpay">GrabPay</option>
@@ -158,11 +163,12 @@
                     </select>
                     <div class="wallet-info">
                         <p>You will be redirected to complete your payment after order confirmation.</p>
+                        <p>Make sure you have sufficient balance in your selected e-wallet account.</p>
                     </div>
                 </div>
                 
                 <!-- Cash Section - Initially Hidden -->
-                <div id="cashDetails" style="display: none;">
+                <div id="cashDetails">
                     <div class="cash-info">
                         <p>Please prepare exact amount for cash on delivery.</p>
                         <p>Our delivery personnel will collect payment upon delivery of your items.</p>
@@ -170,23 +176,24 @@
                 </div>
                 
                 <div class="button-container">
-                    <a href="Checkout.jsp" class="btn btn-back">‹ Return to checkout</a>
+                    <a href="Checkout.jsp" class="btn-back"><i class="fas fa-arrow-left"></i> Return to checkout</a>
                 </div>
         </div>
 
         <!-- RIGHT SIDE: Order Summary -->
         <div class="order-summary">
-            <h3>Order Review</h3>
+            <h3>Order Summary</h3>
             
+            <!-- Cart Items -->
             <% if (cart != null && !cart.isEmpty()) { %>
                 <% for (CartItem item : cart) { %>
                 <div class="cart-item">
                     <img src="<%= request.getContextPath() + "/" + item.getProduct().getImage() %>" 
                          alt="<%= item.getProduct().getName() %>" class="product-img">
                     <div>
-                        <p class="product-name"><strong><%= item.getProduct().getName() %></strong></p>
+                        <p class="product-name"><%= item.getProduct().getName() %></p>
                         <p>Quantity: <%= item.getQuantity() %></p>
-                        <p>Price: RM <%= String.format("%.2f", item.getProduct().getPrice() * item.getQuantity()) %></p>
+                        <p>RM <%= String.format("%.2f", item.getProduct().getPrice() * item.getQuantity()) %></p>
                     </div>
                 </div>
                 <% } %>
@@ -194,8 +201,8 @@
                 <p>No items in cart</p>
             <% } %>
 
+            <!-- Order Summary Section -->
             <div class="summary-section">
-                <h4>Order Summary</h4>
                 <p>Merchandise Subtotal: <span>RM <%= String.format("%.2f", merchandiseSubtotal) %></span></p>
                 <p>Shipping: <span>RM <%= String.format("%.2f", shippingSubtotal) %></span></p>
                 <p>SST: <span>RM <%= String.format("%.2f", shippingSST) %></span></p>
@@ -218,6 +225,8 @@
         </div>
     </div>
     
+    <!-- JavaScript -->
+    <script src="payment.js"></script>
     <script>
         // Theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
@@ -225,17 +234,23 @@
             
         // Check if user has a previously saved theme preference
         const savedTheme = localStorage.getItem('theme');
-        // Default theme is dark (black background), use light-theme class for light mode
+        // Apply theme based on saved preference or default to dark
         if (savedTheme === 'light') {
             document.documentElement.classList.add('light-theme');
             themeIcon.className = 'fas fa-moon';
+        } else {
+            // Ensure dark theme is applied as default
+            document.documentElement.classList.remove('light-theme');
+            themeIcon.className = 'fas fa-sun';
+            localStorage.setItem('theme', 'dark');
         }
         
         // Theme toggle click handler
         themeToggle.addEventListener('click', function() {
+            // Toggle theme class
             document.documentElement.classList.toggle('light-theme');
             
-            // Update button icon
+            // Update button icon and save preference
             if (document.documentElement.classList.contains('light-theme')) {
                 themeIcon.className = 'fas fa-moon';
                 localStorage.setItem('theme', 'light');
@@ -243,6 +258,9 @@
                 themeIcon.className = 'fas fa-sun'; 
                 localStorage.setItem('theme', 'dark');
             }
+            
+            // Force page refresh to ensure all styles are applied correctly
+            location.reload();
         });
     
         // Payment method selection
@@ -252,10 +270,17 @@
         paymentOptions.forEach(option => {
             option.addEventListener('click', function() {
                 // Remove active class from all options
-                paymentOptions.forEach(opt => opt.classList.remove('active'));
+                paymentOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                    // Reset icon color to default
+                    opt.querySelector('i').style.color = '';
+                });
                 
                 // Add active class to selected option
                 this.classList.add('active');
+                
+                // Set icon color to primary color (blue)
+                this.querySelector('i').style.color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
                 
                 // Set hidden input value
                 const method = this.dataset.method;
@@ -319,6 +344,21 @@
         function formatExpiry(input) {
             let value = input.value.replace(/\D/g, '');
             
+            // Check if the first digit is greater than 1, prepend a 0
+            if (value.length === 1 && parseInt(value, 10) > 1) {
+                value = '0' + value;
+            }
+            
+            // Ensure the month is between 01-12
+            if (value.length === 2) {
+                const month = parseInt(value, 10);
+                if (month < 1) {
+                    value = '01';
+                } else if (month > 12) {
+                    value = '12';
+                }
+            }
+            
             if (value.length > 2) {
                 value = value.substring(0, 2) + '/' + value.substring(2, 4);
             }
@@ -341,11 +381,7 @@
             }
             
             const [month, year] = value.split('/');
-            const currentDate = new Date();
-            const currentYear = currentDate.getFullYear() % 100; // Get last 2 digits of year
-            const currentMonth = currentDate.getMonth() + 1; // getMonth is 0-based
             const inputMonth = parseInt(month, 10);
-            const inputYear = parseInt(year, 10);
             
             // Check if month is valid (1-12)
             if (inputMonth < 1 || inputMonth > 12) {
@@ -354,13 +390,7 @@
                 return;
             }
             
-            // Check if the card has expired
-            if (inputYear < currentYear || (inputYear === currentYear && inputMonth < currentMonth)) {
-                validationMsg.textContent = 'Card has expired';
-                validationMsg.classList.add('show');
-                input.classList.add('error');
-                return;
-            }
+            // We're no longer checking if card is expired as requested
             
             validationMsg.textContent = 'Please enter a valid expiry date.';
             validationMsg.classList.remove('show');

@@ -1,0 +1,555 @@
+/* Cyberpunk Create Admin Theme - Matches site's design */
+:root {
+    --bg-color: black;
+    --text-color: #fff;
+    --heading-color: #fff;
+    --card-bg: rgba(20, 20, 20, 0.8);
+    --card-border: rgba(255, 70, 70, 0.3);
+    --shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    --btn-bg: linear-gradient(90deg, #ff0000, #ff4500);
+    --btn-text: white;
+    --cyber-glow: 0 0 5px #ff0000, 0 0 10px #ff4500;
+    --cyber-glow-intense: 0 0 10px #ff0000, 0 0 20px #ff4500, 0 0 30px rgba(255, 69, 0, 0.5);
+    --accent-color: #ff4500;
+    --secondary-color: #ff00f7;
+    --input-bg: rgba(30, 30, 30, 0.8);
+    --success-color: #00ff66;
+    --error-color: #ff0055;
+    --border-glow: 0 0 5px #ff0000, 0 0 10px rgba(255, 69, 0, 0.7);
+    --glitch-color-1: #ff00c1;
+    --glitch-color-2: #00ffff;
+    --binary-color: rgba(0, 255, 170, 0.03);
+}
+
+/* Light Theme */
+html.light-theme {
+    --bg-color: #121212; /* Keeping dark background */
+    --text-color: #000;
+    --heading-color: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(255, 70, 70, 0.3);
+    --shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+    --btn-bg: linear-gradient(90deg, #ff0000, #ff4500);
+    --btn-text: white;
+    --cyber-glow: 0 0 4px #ff0000, 0 0 8px rgba(255, 69, 0, 0.4);
+    --cyber-glow-intense: 0 0 8px #ff0000, 0 0 15px rgba(255, 69, 0, 0.4);
+    --input-bg: rgba(240, 240, 240, 0.9);
+    --success-color: #00cc55;
+    --error-color: #ff0055;
+    --border-glow: 0 0 5px rgba(255, 0, 0, 0.4), 0 0 8px rgba(255, 69, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+}
+
+html.light-theme body::before {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.create-admin-container {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+
+/* Background Elements */
+.background-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.cyber-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color);
+    opacity: 0.2;
+    filter: blur(2px);
+    box-shadow: var(--cyber-glow);
+    animation: pulsate 4s infinite alternate;
+}
+
+.cyber-circle:nth-child(1) {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    left: -100px;
+    border-color: var(--accent-color);
+    animation-delay: 0s;
+}
+
+.cyber-circle:nth-child(2) {
+    width: 500px;
+    height: 500px;
+    bottom: -200px;
+    right: -200px;
+    border-color: var(--secondary-color);
+    animation-delay: 1s;
+}
+
+.cyber-circle.small-circle {
+    width: 150px;
+    height: 150px;
+    top: 70%;
+    left: 20%;
+    border-color: var(--secondary-color);
+    animation-delay: 0.5s;
+    opacity: 0.15;
+}
+
+.cyber-line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    opacity: 0.4;
+    filter: blur(1px);
+    animation: flow 8s infinite linear;
+}
+
+.line1 {
+    width: 100%;
+    top: 20%;
+    left: 0;
+    animation-duration: 10s;
+}
+
+.line2 {
+    width: 80%;
+    top: 50%;
+    right: 0;
+    animation-duration: 8s;
+}
+
+.line3 {
+    width: 60%;
+    bottom: 30%;
+    left: 10%;
+    animation-duration: 12s;
+}
+
+.cyber-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: -2;
+}
+
+/* Create Admin Box */
+.create-admin-box {
+    width: 100%;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow), 0 0 20px rgba(255, 69, 0, 0.2);
+    padding: 30px;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.create-admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.create-admin-title {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--heading-color);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    text-shadow: var(--cyber-glow-intense);
+}
+
+.cyber-text {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+}
+
+.cyber-subtitle {
+    font-size: 14px;
+    letter-spacing: 3px;
+    opacity: 0.7;
+    color: var(--accent-color);
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+/* Form Styles */
+.cyber-input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.cyber-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 13px;
+    font-size: 16px;
+    color: var(--accent-color);
+    opacity: 0.8;
+    z-index: 1;
+}
+
+.cyber-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    outline: none;
+}
+
+html.light-theme .cyber-input {
+    color: #e0e0e0;
+    background-color: var(--input-bg);
+}
+
+.cyber-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: var(--border-glow);
+}
+
+.cyber-input-border {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+    transition: width 0.3s;
+}
+
+.cyber-input:focus ~ .cyber-input-border {
+    width: 100%;
+}
+
+/* Password strength indicator */
+.password-feedback {
+    font-size: 12px;
+    margin-top: 5px;
+    transition: all 0.3s;
+    height: 15px;
+}
+
+.password-feedback.weak {
+    color: var(--error-color);
+}
+
+.password-feedback.medium {
+    color: #ffcc00;
+}
+
+.password-feedback.strong {
+    color: var(--success-color);
+}
+
+.password-feedback.match {
+    color: var(--success-color);
+}
+
+.password-feedback.no-match {
+    color: var(--error-color);
+}
+
+/* Button */
+.cyber-button {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 4px;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--cyber-glow);
+    margin-top: 10px;
+}
+
+.cyber-button:hover {
+    box-shadow: var(--cyber-glow-intense);
+    transform: translateY(-2px);
+}
+
+.cyber-button:active {
+    transform: translateY(1px);
+}
+
+.cyber-button-text {
+    position: relative;
+    z-index: 1;
+}
+
+.cyber-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s;
+}
+
+.cyber-button:hover::before {
+    left: 100%;
+}
+
+/* Footer */
+.cyber-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 70, 70, 0.2);
+}
+
+.back-to-dashboard a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 14px;
+    opacity: 0.8;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-to-dashboard a:hover {
+    color: var(--accent-color);
+    opacity: 1;
+    text-shadow: var(--cyber-glow);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 70, 70, 0.3);
+    border-radius: 25px;
+    padding: 5px 12px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 0, 0, 0.1);
+    box-shadow: var(--cyber-glow);
+}
+
+.theme-text {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Alert messages */
+.cyber-alert {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    background: rgba(255, 0, 0, 0.1);
+    border-left: 4px solid var(--error-color);
+    color: var(--text-color);
+    font-size: 14px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cyber-alert i {
+    color: var(--error-color);
+    font-size: 16px;
+}
+
+.cyber-alert.success {
+    background: rgba(0, 255, 102, 0.1);
+    border-left-color: var(--success-color);
+}
+
+.cyber-alert.success i {
+    color: var(--success-color);
+}
+
+/* Animations */
+@keyframes pulsate {
+    0% {
+        transform: scale(1);
+        opacity: 0.2;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.2;
+    }
+}
+
+@keyframes flow {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Glitch effects */
+.glitch {
+    position: relative;
+    transition: all 0.2s;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.glitch::before {
+    color: var(--glitch-color-1);
+    z-index: -1;
+}
+
+.glitch::after {
+    color: var(--glitch-color-2);
+    z-index: -2;
+}
+
+.glitch.active-glitch::before {
+    animation: glitch-anim-1 0.4s linear forwards;
+}
+
+.glitch.active-glitch::after {
+    animation: glitch-anim-2 0.4s linear forwards;
+}
+
+@keyframes glitch-anim-1 {
+    0%, 100% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    20%, 40%, 60%, 80% {
+        opacity: 0.5;
+        transform: translate(-5px, 2px);
+    }
+    30%, 50%, 70%, 90% {
+        opacity: 0;
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0%, 100% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        opacity: 0.5;
+        transform: translate(5px, -2px);
+    }
+    20%, 40%, 60%, 80% {
+        opacity: 0;
+    }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .create-admin-box {
+        padding: 20px;
+    }
+
+    .create-admin-title {
+        font-size: 24px;
+    }
+    
+    .cyber-footer {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .create-admin-box {
+        padding: 15px;
+    }
+    
+    .create-admin-title {
+        font-size: 20px;
+    }
+    
+    .cyber-input {
+        padding: 10px 10px 10px 35px;
+    }
+    
+    .cyber-input-icon {
+        left: 10px;
+        top: 11px;
+    }
+}

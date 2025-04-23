@@ -6,6 +6,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
 import java.io.IOException;
+import model.User;
 
 @WebServlet("/AdminReviews")
 public class AdminReviewServlet extends HttpServlet {
@@ -29,7 +30,18 @@ public class AdminReviewServlet extends HttpServlet {
             int reviewId = Integer.parseInt(request.getParameter("reviewId"));
             String reply = request.getParameter("reply");
             
-            boolean success = ReviewDAO.addAdminReply(reviewId, reply);
+            // Get the current user's role from the session
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
+            String responderRole = "Admin"; // Default
+            
+            if (user != null) {
+                // Use the actual role of the current user
+                responderRole = user.getRole().equalsIgnoreCase("MANAGER") ? "Manager" : "Admin";
+            }
+            
+            // Save the reply with the appropriate role
+            boolean success = ReviewDAO.addAdminReply(reviewId, reply, responderRole);
             
             if (success) {
                 response.sendRedirect("AdminReviews.jsp?replySuccess=true");
