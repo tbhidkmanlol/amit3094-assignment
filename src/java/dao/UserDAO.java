@@ -41,11 +41,29 @@ public class UserDAO {
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new User(
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("role")
-                    );
+                    int id = rs.getInt("id");
+                    String role = rs.getString("role");
+                    
+                    if ("CUSTOMER".equals(role)) {
+                        // For customers, fetch additional information
+                        return new User(
+                            id,
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            role,
+                            rs.getString("customer_name"),
+                            rs.getString("contact_number"),
+                            rs.getString("email")
+                        );
+                    } else {
+                        // For ADMIN and MANAGER, just the basic fields
+                        return new User(
+                            id,
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            role
+                        );
+                    }
                 }
             }
         }
@@ -54,12 +72,16 @@ public class UserDAO {
 
     // 3. Register customer
     public boolean registerCustomer(User user) throws SQLException, Exception {
-        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, 'CUSTOMER')";
+        String sql = "INSERT INTO users (username, password, role, customer_name, contact_number, email) VALUES (?, ?, 'CUSTOMER', ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getCustomerName());
+            stmt.setString(4, user.getContactNumber());
+            stmt.setString(5, user.getEmail());
+            
             return stmt.executeUpdate() > 0;
         }
     }
@@ -77,6 +99,166 @@ public class UserDAO {
             
             stmt.setString(1, admin.getUsername());
             stmt.setString(2, admin.getPassword());
+            return stmt.executeUpdate() > 0;
+        }
+    }
+    
+    // 5. Create staff account by manager
+    public boolean createStaffAccount(String username, String password) throws SQLException, Exception {
+        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, 'ADMIN')";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+    
+    // 6. Update user password
+    public boolean updatePassword(int userId, String newPassword) throws SQLException, Exception {
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, newPassword);
+            stmt.setInt(2, userId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+    
+    // 7. Get all customers (for manager view)
+    public java.util.List<User> getAllCustomers() throws SQLException, Exception {
+        java.util.List<User> customers = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role = 'CUSTOMER'";
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                User customer = new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role"),
+                    rs.getString("customer_name"),
+                    rs.getString("contact_number"),
+                    rs.getString("email")
+                );
+                customers.add(customer);
+            }
+        }
+        return customers;
+    }
+    
+    // 8. Get all staff (for manager view)
+    public java.util.List<User> getAllStaff() throws SQLException, Exception {
+        java.util.List<User> staff = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role = 'ADMIN'";
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                User admin = new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role")
+                );
+                staff.add(admin);
+            }
+        }
+        return staff;
+    }
+    
+    // 9. Get user by ID
+    public User getUserById(int userId) throws SQLException, Exception {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String role = rs.getString("role");
+                    
+                    if ("CUSTOMER".equals(role)) {
+                        return new User(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            role,
+                            rs.getString("customer_name"),
+                            rs.getString("contact_number"),
+                            rs.getString("email")
+                        );
+                    } else {
+                        return new User(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            role
+                        );
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    // 10. Update customer details
+    public boolean updateCustomer(User customer) throws SQLException, Exception {
+        String sql = "UPDATE users SET username = ?, password = ?, customer_name = ?, contact_number = ?, email = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, customer.getUsername());
+            stmt.setString(2, customer.getPassword());
+            stmt.setString(3, customer.getCustomerName());
+            stmt.setString(4, customer.getContactNumber());
+            stmt.setString(5, customer.getEmail());
+            stmt.setInt(6, customer.getId());
+            
+            return stmt.executeUpdate() > 0;
+        }
+    }
+    
+    // 11. Delete user
+    public boolean deleteUser(int userId) throws SQLException, Exception {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+    
+    // 12. Check if username exists
+    public boolean usernameExists(String username) throws SQLException, Exception {
+        String sql = "SELECT 1 FROM users WHERE username = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+    
+    // 13. Update username 
+    public boolean updateUsername(int userId, String newUsername) throws SQLException, Exception {
+        String sql = "UPDATE users SET username = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, newUsername);
+            stmt.setInt(2, userId);
             return stmt.executeUpdate() > 0;
         }
     }
