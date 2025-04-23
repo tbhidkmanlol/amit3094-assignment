@@ -34,7 +34,7 @@ public class AuthController extends HttpServlet {
         try {
             switch (action) {
                 case "/login":
-                    // PROPERLY DECLARE username and password first
+                    // Get login details
                     String username = request.getParameter("username");
                     String password = request.getParameter("password");
 
@@ -45,6 +45,7 @@ public class AuthController extends HttpServlet {
                         session.setAttribute("user", user);
                         session.setAttribute("username", user.getUsername());
                         session.setAttribute("role", user.getRole());
+                        session.setAttribute("userId", user.getId());
                         
                         // Check if there's a redirect destination after login
                         String redirectDestination = (String) session.getAttribute("redirectAfterLogin");
@@ -71,11 +72,27 @@ public class AuthController extends HttpServlet {
                     break;
 
                 case "/register":
-                    // PROPERLY CREATE newUser object
+                    // Validate user input before registration
+                    String regUsername = request.getParameter("username");
+                    String regPassword = request.getParameter("password");
+                    String customerName = request.getParameter("fullName");
+                    String contactNumber = request.getParameter("phone");
+                    String email = request.getParameter("email");
+                    
+                    // Check if username already exists
+                    if (userDao.usernameExists(regUsername)) {
+                        response.sendRedirect("../login.jsp?error=username_taken");
+                        return;
+                    }
+                    
+                    // Create new user object with customer details
                     User newUser = new User(
-                            request.getParameter("username"),
-                            request.getParameter("password"),
-                            "CUSTOMER"
+                            regUsername,
+                            regPassword,
+                            "CUSTOMER",
+                            customerName,
+                            contactNumber,
+                            email
                     );
 
                     if (userDao.registerCustomer(newUser)) {
@@ -86,14 +103,15 @@ public class AuthController extends HttpServlet {
                         if (redirectDestination != null && !redirectDestination.isEmpty()) {
                             // Auto-login the user after registration
                             User registeredUser = userDao.authenticate(
-                                request.getParameter("username"),
-                                request.getParameter("password")
+                                regUsername,
+                                regPassword
                             );
                             
                             if (registeredUser != null) {
                                 session.setAttribute("user", registeredUser);
                                 session.setAttribute("username", registeredUser.getUsername());
                                 session.setAttribute("role", registeredUser.getRole());
+                                session.setAttribute("userId", registeredUser.getId());
                                 session.removeAttribute("redirectAfterLogin");
                                 response.sendRedirect("../" + redirectDestination);
                                 return;
@@ -103,13 +121,13 @@ public class AuthController extends HttpServlet {
                         // Default registration success flow
                         response.sendRedirect("../login.jsp?registered=1");
                     } else {
-                        response.sendRedirect("../register.jsp?error=1");
+                        response.sendRedirect("../login.jsp?error=registration");
                     }
                     break;
 
                 case "/create-admin":
                     HttpSession session = request.getSession();
-                    // PROPERLY GET manager from session
+                    // Get manager from session
                     User manager = (User) session.getAttribute("user");
 
                     if (manager == null || !"MANAGER".equals(manager.getRole())) {
@@ -117,7 +135,7 @@ public class AuthController extends HttpServlet {
                         return;
                     }
 
-                    // PROPERLY CREATE newAdmin object
+                    // Create new admin user
                     User newAdmin = new User(
                             request.getParameter("username"),
                             request.getParameter("password"),
@@ -130,11 +148,53 @@ public class AuthController extends HttpServlet {
                         response.sendRedirect("../manager/create-admin.jsp?error=1");
                     }
                     break;
+                    
+                case "/update-password":
+                    HttpSession passwordSession = request.getSession();
+                    User currentUser = (User) passwordSession.getAttribute("user");
+                    
+                    if (currentUser == null) {
+                        response.sendRedirect("../login.jsp");
+                        return;
+                    }
+                    
+                    String newPassword = request.getParameter("newPassword");
+                    if (userDao.updatePassword(currentUser.getId(), newPassword)) {
+                        // Update session with new password
+                        currentUser.setPassword(newPassword);
+                        passwordSession.setAttribute("user", currentUser);
+                        
+                        // Redirect based on role
+                        switch (currentUser.getRole()) {
+                            case "MANAGER":
+                                response.sendRedirect("../manager/dashboard.jsp?success=password_changed");
+                                break;
+                            case "ADMIN":
+                                response.sendRedirect("../admin/dashboard.jsp?success=password_changed");
+                                break;
+                            default:
+                                response.sendRedirect("../customer/dashboard.jsp?success=password_changed");
+                        }
+                    } else {
+                        // Redirect based on role with error
+                        switch (currentUser.getRole()) {
+                            case "MANAGER":
+                                response.sendRedirect("../manager/dashboard.jsp?error=password_update");
+                                break;
+                            case "ADMIN":
+                                response.sendRedirect("../admin/dashboard.jsp?error=password_update");
+                                break;
+                            default:
+                                response.sendRedirect("../customer/dashboard.jsp?error=password_update");
+                        }
+                    }
+                    break;
             }
         } catch (SQLException e) {
             throw new ServletException("Database error", e);
         } catch (Exception ex) {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+            response.sendRedirect("../login.jsp?error=system");
         }
     }
 

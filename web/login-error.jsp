@@ -1,68 +1,107 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login Failed</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-        }
-        .error-container {
-            width: 400px;
-            margin: 100px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            text-align: center;
-            border-left: 5px solid #dc3545;
-        }
-        .error-icon {
-            color: #dc3545;
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
-        .btn-retry {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .btn-retry:hover {
-            background-color: #c82333;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Error - Cyberpunk Tech</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="error-container">
-        <div class="error-icon">✕</div>
-        <h2>Login Failed</h2>
-        
-        <%-- Display specific error message --%>
-        <% String error = request.getParameter("error"); %>
-        <p>
-            <% if("invalid".equals(error)) { %>
-                Invalid username or password. Please try again.
-            <% } else if("locked".equals(error)) { %>
-                Account temporarily locked. Try again in 15 minutes.
-            <% } else if("expired".equals(error)) { %>
-                Your session has expired. Please login again.
-            <% } else { %>
-                An error occurred during login. Please try again.
-            <% } %>
-        </p>
-        
-        <a href="login.jsp" class="btn-retry">Return to Login</a>
-        
-        <div style="margin-top: 30px; font-size: 14px; color: #6c757d;">
-            <p>Need help? <a href="mailto:support@yourdomain.com">Contact support</a></p>
+    <!-- Video Background -->
+    <video autoplay muted loop id="background-video">
+        <source src="Images/loginBackground.mp4" type="video/mp4">
+    </video>
+    
+    <!-- Background Elements -->
+    <div class="background-elements">
+        <div class="cyber-grid"></div>
+        <div class="cyber-circle"></div>
+        <div class="cyber-circle"></div>
+        <div class="cyber-line line1"></div>
+        <div class="cyber-line line2"></div>
+        <div class="cyber-line line3"></div>
+        <div class="cyber-line line4"></div>
+        <div class="cyber-circle small-circle"></div>
+        <div class="binary-overlay"></div>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <header class="auth-header">
+                <div class="logo-container">
+                    <img src="Images/logo.png" alt="Logo" class="logo">
+                    <div class="logo-glitch-effect"></div>
+                </div>
+                <h1 class="auth-title cyber-text glitch" data-text="ERROR">
+                    <span>System Error</span>
+                </h1>
+                <div class="cyber-subtitle">Authentication Failed</div>
+            </header>
+
+            <div class="error-container">
+                <div class="cyber-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>
+                        <%
+                        String errorCode = request.getParameter("code");
+                        String errorMessage = "An unknown error occurred during authentication.";
+                        
+                        if ("1".equals(errorCode)) {
+                            errorMessage = "Invalid username or password. Please try again.";
+                        } else if ("username_taken".equals(errorCode)) {
+                            errorMessage = "Username already exists. Please choose another one.";
+                        } else if ("registration".equals(errorCode)) {
+                            errorMessage = "Registration failed. Please try again.";
+                        } else if ("unauthorized".equals(errorCode)) {
+                            errorMessage = "You are not authorized to access this resource.";
+                        } else if ("session_expired".equals(errorCode)) {
+                            errorMessage = "Your session has expired. Please log in again.";
+                        }
+                        %>
+                        <%= errorMessage %>
+                    </span>
+                </div>
+                
+                <div class="cyber-button-container">
+                    <a href="login.jsp" class="cyber-button">
+                        <span class="cyber-button-text">RETURN TO LOGIN</span>
+                        <span class="cyber-button-glitch"></span>
+                    </a>
+                </div>
+                
+                <div class="help-text">
+                    <p>If you continue to experience issues, please contact support.</p>
+                    <p>Error Code: <%= errorCode != null ? errorCode : "UNKNOWN" %></p>
+                </div>
+            </div>
+
+            <footer class="cyber-footer">
+                <div class="back-to-home">
+                    <a href="home.jsp">
+                        <i class="fas fa-arrow-left"></i> Return to Main Grid
+                    </a>
+                </div>
+            </footer>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Glitch effect
+            const glitchTitle = document.querySelector('.glitch');
+            function randomGlitch() {
+                glitchTitle.classList.add('active-glitch');
+                setTimeout(() => {
+                    glitchTitle.classList.remove('active-glitch');
+                }, 200);
+            }
+            
+            // Trigger glitch effect more frequently for error page
+            setInterval(randomGlitch, 1500 + Math.random() * 2000);
+        });
+    </script>
 </body>
 </html>
