@@ -277,12 +277,14 @@
         boolean showSettings = "settings".equals(section);
         boolean showCustomers = "customers".equals(section);
         boolean showStaff = "staff".equals(section);
+        boolean showProducts = "products".equals(section);
         
         // Default to admin management if no section specified
         if (section == null) {
             showSettings = false;
             showCustomers = false;
             showStaff = false;
+            showProducts = false;
         }
     %>
     
@@ -329,14 +331,15 @@
         
         <!-- Navigation Tabs -->
         <div class="tab-nav">
-            <a href="dashboard.jsp" class="<%= !showSettings && !showCustomers && !showStaff ? "active" : "" %>">Admin Management</a>
+            <a href="dashboard.jsp" class="<%= !showSettings && !showCustomers && !showStaff && !showProducts ? "active" : "" %>">Admin Management</a>
             <a href="?section=customers" class="<%= showCustomers ? "active" : "" %>">Customer Management</a>
             <a href="?section=staff" class="<%= showStaff ? "active" : "" %>">Staff Management</a>
+            <a href="?section=products" class="<%= showProducts ? "active" : "" %>">Product Management</a>
             <a href="?section=settings" class="<%= showSettings ? "active" : "" %>">Settings</a>
         </div>
         
         <!-- Admin Management Section -->
-        <div class="tab-content <%= !showSettings && !showCustomers && !showStaff ? "active" : "" %>" id="admin-management">
+        <div class="tab-content <%= !showSettings && !showCustomers && !showStaff && !showProducts ? "active" : "" %>" id="admin-management">
             <div class="dashboard-section">
                 <h3>Admin Management</h3>
                 <p>Create and manage admin accounts for your e-commerce platform.</p>
@@ -430,6 +433,15 @@
                 <% } %>
                 
                 <button class="btn" onclick="openNewStaffModal()"><i class='bx bx-user-plus'></i> Add New Staff</button>
+            </div>
+        </div>
+        
+        <!-- Product Management Section -->
+        <div class="tab-content <%= showProducts ? "active" : "" %>" id="product-management">
+            <div class="dashboard-section">
+                <h3>Product Management</h3>
+                <p>Access the product management system to add, edit, and manage products.</p>
+                <a href="../admin-product.jsp" class="btn"><i class='bx bx-package'></i> Manage Products</a>
             </div>
         </div>
         

@@ -4,22 +4,33 @@
     Author     : Dell
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="dao.ProductDAO, model.Product, java.util.List"%>
+<%@page import="dao.ProductDAO, model.Product, java.util.List, model.User"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard | Product Management</title>
+    <title>Product Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="admin-product.css">
 </head>
 <body>
+    <%
+        // Authentication check
+        User currentUser = (User) session.getAttribute("user");
+        if (currentUser == null || (!("ADMIN".equals(currentUser.getRole()) || "MANAGER".equals(currentUser.getRole())))) {
+            response.sendRedirect("login.jsp?error=unauthorized");
+            return;
+        }
+        
+        // Determine the return link based on user role
+        String returnLink = "ADMIN".equals(currentUser.getRole()) ? "admin/dashboard.jsp" : "manager/dashboard.jsp";
+    %>
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-box-open"></i> Product Management</h1>
             <div class="header-actions">
-                <a href="#" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Admin Panel</a>
+                <a href="<%= returnLink %>" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
                 <a href="CartController" class="btn"><i class="fas fa-external-link-alt"></i> View Store</a>
             </div>
         </div>
