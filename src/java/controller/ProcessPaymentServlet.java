@@ -13,6 +13,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import model.CartItem;
+import model.Order;
+import model.OrderItem;
+import model.User;
+import dao.OrderDAO;
+import dao.ProductDAO;
 
 @WebServlet("/ProcessPaymentServlet")
 public class ProcessPaymentServlet extends HttpServlet {
@@ -21,13 +26,17 @@ public class ProcessPaymentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Get session
+        // 获取会话
         HttpSession session = request.getSession();
         
-        // Retrieve cart items
+        // 获取购物车商品
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
         
-        // Get form parameters
+        // 获取用户信息
+        User user = (User) session.getAttribute("user");
+        int customerId = (user != null) ? user.getId() : 0;
+        
+        // 获取表单参数
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
@@ -37,7 +46,7 @@ public class ProcessPaymentServlet extends HttpServlet {
         String postal = request.getParameter("postal");
         String country = request.getParameter("country");
         
-        // Get payment details
+        // 获取支付细节
         String paymentMethod = request.getParameter("method");
         String cardType = request.getParameter("cardType");
         String cardName = request.getParameter("cardName");
@@ -46,35 +55,35 @@ public class ProcessPaymentServlet extends HttpServlet {
         String cvv = request.getParameter("cvv");
         String walletType = request.getParameter("walletType");
         
-        // Get financial values
+        // 获取财务值
         double merchandiseSubtotal = Double.parseDouble(request.getParameter("merchandiseSubtotal"));
         double shippingSubtotal = Double.parseDouble(request.getParameter("shippingSubtotal"));
         double shippingSST = Double.parseDouble(request.getParameter("shippingSST"));
         double deliveryFee = Double.parseDouble(request.getParameter("deliveryFee"));
         double totalPayment = Double.parseDouble(request.getParameter("totalPayment"));
         
-        // Generate transaction/order number (Current timestamp + random 4 digits)
+        // 生成交易/订单号
         String orderNumber = generateOrderNumber();
         
-        // Generate current date and estimated delivery date (7 days from now)
+        // 生成当前日期和预计送达日期（7天后）
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
         Date currentDate = new Date();
         String orderDate = dateFormat.format(currentDate);
         
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
-        calendar.add(Calendar.DATE, 7); // Add 7 days
+        calendar.add(Calendar.DATE, 7); // 添加7天
         String estimatedDeliveryDate = dateFormat.format(calendar.getTime());
         
-        // Mask card number if credit/debit card payment
+        // 如果是信用卡/借记卡支付，则掩盖卡号
         if ("creditCard".equals(paymentMethod) || "debitCard".equals(paymentMethod)) {
             if (cardNumber != null && cardNumber.length() >= 16) {
-                // Keep only last 4 digits visible, mask the rest
+                // 只保留最后4位数字可见，其余掩盖
                 cardNumber = "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
             }
         }
         
-        // Set all attributes for confirmation page
+        // 为确认页面设置所有属性
         request.setAttribute("orderNumber", orderNumber);
         request.setAttribute("orderDate", orderDate);
         request.setAttribute("estimatedDeliveryDate", estimatedDeliveryDate);
@@ -100,27 +109,58 @@ public class ProcessPaymentServlet extends HttpServlet {
         request.setAttribute("deliveryFee", deliveryFee);
         request.setAttribute("totalPayment", String.format("%.2f", totalPayment));
         
-        // Pass the cart items to be displayed in the confirmation page
+        // 传递购物车商品以在确认页面显示
         request.setAttribute("confirmedCart", cart);
         
-        // In a real application, you would:
-        // 1. Save the order to the database
-        // 2. Process the payment with a payment gateway
-        // 3. Clear the cart once payment is successful
-        // 4. Send confirmation email to customer
+        // 创建订单对象
+        Order order = new Order();
+        order.setOrderNumber(orderNumber);
+        order.setCustomerId(customerId);
+        order.setTotalAmount(totalPayment);
+        order.setShippingFee(deliveryFee);
+        order.setTaxAmount(shippingSST);
+        order.setPaymentMethod(paymentMethod);
+        order.setPaymentStatus("PAID");
+        order.setShippingStatus("PROCESSING");
         
-        // For now, just forward to confirmation page
-        session.removeAttribute("cart"); // Clear the cart after successful order
+        // 组合地址信息
+        String fullAddress = address + ", " + city + ", " + state + ", " + postal;
+        order.setBillingAddress(fullAddress);
+        order.setShippingAddress(fullAddress);
+        order.setCustomerEmail(email);
         
-        // Forward to confirmation page
-        request.getRequestDispatcher("confirmation.jsp").forward(request, response);
+        // 添加订单商品
+        if (cart != null) {
+            for (CartItem cartItem : cart) {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setProductId(cartItem.getProduct().getId());
+                orderItem.setQuantity(cartItem.getQuantity());
+                orderItem.setPricePerUnit(cartItem.getProduct().getPrice());
+                order.addOrderItem(orderItem);
+            }
+        }
+        
+        // 保存订单到数据库
+        int orderId = OrderDAO.createOrder(order);
+        
+        if (orderId > 0) {
+            // 订单创建成功，清除购物车
+            session.removeAttribute("cart");
+            
+            // 转发到确认页面
+            request.getRequestDispatcher("confirmation.jsp").forward(request, response);
+        } else {
+            // 订单创建失败
+            request.setAttribute("errorMessage", "支付处理失败，请重试。");
+            request.getRequestDispatcher("payment.jsp").forward(request, response);
+        }
     }
     
-    // Helper method to generate a unique order number
+    // 生成唯一订单号的辅助方法
     private String generateOrderNumber() {
         long timestamp = System.currentTimeMillis();
         Random random = new Random();
-        int randomDigits = random.nextInt(10000); // Random 4-digit number
+        int randomDigits = random.nextInt(10000); // 随机4位数字
         return "TX" + timestamp + String.format("%04d", randomDigits);
     }
 }
