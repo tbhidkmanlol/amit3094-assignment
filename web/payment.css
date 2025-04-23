@@ -1,19 +1,82 @@
+/* Payment Page Styling */
+:root {
+    /* Dark Theme Variables (Default) */
+    --primary-color: blue;
+    --secondary-color: #333; /* Changed from pink to dark gray for order summary */
+    --text-color: #fff;
+    --background-color: #000;
+    --wrapper-bg: #111;
+    --card-background: #222222;
+    --order-summary-bg: #1a1a1a; /* For order summary background */
+    --border-color: #444;
+    --input-bg: #191919;
+    --error-color: #f72585;
+    --success-color: #4cc9f0;
+    --accent-glow: #ff00f7;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --free-delivery-color: #4cc9f0;
+    --button-gradient: linear-gradient(to right, #5818e4, #1a4fef); /* Gradient for buttons */
+}
+
+/* Light theme variables */
+html.light-theme {
+    --primary-color: blue;
+    --secondary-color: #f0f0f0; /* Light gray for order summary in light mode */
+    --text-color: #333;
+    --background-color: #f5f5f5;
+    --wrapper-bg: #fff;
+    --card-background: #f0f0f0;
+    --order-summary-bg: #f0f0f0; /* For order summary background */
+    --border-color: #ddd;
+    --input-bg: #fff;
+    --error-color: #f72585;
+    --success-color: #4cc9f0;
+    --accent-glow: transparent;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --free-delivery-color: #40c9a2;
+    --button-gradient: linear-gradient(to right, #4568dc, #3f83f8); /* Gradient for buttons light mode */
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
 }
 
 body {
-    font-family: 'Orbitron', sans-serif;
-    background-color: #000; /* Same as homepage */
-    color: #fff;
+    background-color: var(--background-color);
+    color: var(--text-color);
     padding: 40px;
     display: flex;
     justify-content: center;
     overflow-x: hidden;
     margin-top: 30px; /* Move it down */
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 10px var(--shadow-color);
+    z-index: 100;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
 }
 
 /* Payment Wrapper */
@@ -22,32 +85,43 @@ body {
     max-width: 1000px;
     width: 100%;
     gap: 30px;
-    background-color: #111;
+    background-color: var(--wrapper-bg);
     border-radius: 12px;
     box-shadow: 0 0 25px rgba(255, 0, 247, 0.2), 0 0 40px rgba(255, 69, 0, 0.25);
     padding: 30px;
 }
 
+html.light-theme .payment-wrapper {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
 /* Left Section */
 .payment-container {
     flex: 2;
+    background-color: var(--wrapper-bg);
+    color: var(--text-color);
 }
 
 /* Order Summary Section */
 .order-summary {
     flex: 1;
-    background-color: #1a1a1a;
+    background-color: var(--order-summary-bg);
     padding: 20px;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 0 15px rgba(255, 0, 247, 0.3);
+    box-shadow: 0 0 15px var(--shadow-color);
+    color: var(--text-color);
+}
+
+html.light-theme .order-summary {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Headings */
-h2, h3 {
-    color: #fff;
+h2, h3, h4 {
+    color: var(--text-color);
     margin-bottom: 20px;
 }
 
@@ -57,6 +131,7 @@ label {
     margin-bottom: 6px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    color: var(--text-color);
 }
 
 /* Billing Address Layout */
@@ -65,12 +140,12 @@ label {
     grid-template-columns: 1fr 1fr;  /* Two columns */
     grid-template-rows: auto auto;   /* Two rows */
     gap: 10px;  /* Space between inputs */
+    margin-bottom: 20px;
 }
 
 /* Shorter Inputs */
 .billing-address-grid input {
     width: 80%;  /* Make the input fields shorter */
-    
 }
 
 /* Inputs & Selects */
@@ -78,29 +153,78 @@ input, select, textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 20px;
-    background-color: #191919;
-    border: 1px solid #444;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    color: #fff;
+    color: var(--text-color);
     font-size: 14px;
     box-sizing: border-box;
-    text-shadow: 0 0 4px #ff00f7;
     transition: 0.3s ease;
+}
+
+/* Add text-shadow only for dark theme */
+html:not(.light-theme) input, 
+html:not(.light-theme) select, 
+html:not(.light-theme) textarea {
+    text-shadow: 0 0 4px var(--accent-glow);
 }
 
 input::placeholder, textarea::placeholder {
     color: #aaa;
 }
 
-/* Textarea Styling */
-textarea {
-    resize: none;
-    height: 80px;
+input[readonly] {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+
+/* Card Row/Column layout */
+.card-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.card-col {
+    flex: 1;
+}
+
+/* Cash and E-Wallet info sections */
+.cash-info, .wallet-info {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0 20px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.cash-info p, .wallet-info p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Validation Messages */
+.validation-message {
+    color: var(--error-color);
+    font-size: 12px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.validation-message.show {
+    display: block;
+}
+
+.error-field {
+    border-color: var(--error-color) !important;
+    box-shadow: 0 0 0 1px var(--error-color) !important;
 }
 
 /* Submit Button & Pay Button */
-input[type="submit"], .summary-button {
-    background-color: blue;
+input[type="submit"] {
+    background-color: var(--primary-color);
     color: white;
     border: none;
     padding: 12px;
@@ -112,44 +236,544 @@ input[type="submit"], .summary-button {
     transition: background-color 0.3s ease;
 }
 
-input[type="submit"]:hover, .summary-button:hover {
-    background-color: blue;
+input[type="submit"]:hover {
+    background-color: var(--primary-color);
+    opacity: 0.9;
 }
 
-/* Card Details Transition */
-#cardDetails {
+.btn-back {
+    background: none;
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 0.8rem;
+    display: inline-block;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+/* Confirm Order Button */
+.confirm-order-btn {
+    background: var(--button-gradient);
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-top: 20px;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Summary Item Styling */
-.summary-item {
-    margin-bottom: 10px;
+.confirm-order-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-order-btn:active {
+    transform: translateY(0);
+}
+
+/* Payment method icons styling */
+.payment-method-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.payment-method-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* Custom select with icons */
+.payment-select-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.payment-method-icon-preview {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.payment-select-with-icon {
+    padding-left: 45px; /* Space for the icon */
+}
+
+/* Cart item display */
+.cart-item {
+    display: flex;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.product-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 1rem;
+}
+
+.product-name {
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+}
+
+/* Order Summary Styling */
+.summary-section {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.summary-section p {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.summary-section h4 {
+    margin-bottom: 15px;
     font-size: 16px;
 }
 
-/* Order Summary Input */
-.order-summary input[type="text"] {
-    margin-bottom: 15px;
-    background-color: #222;
-    color: #fff;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 10px;
+.free-delivery {
+    color: var(--free-delivery-color);
+    font-weight: bold;
 }
 
-/* Coupon Apply Button Style */
-.order-summary button {
-    background-color: blue;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    border-radius: 6px;
+.free-delivery-note, .delivery-note {
+    display: block;
+    font-size: 12px;
+    margin-top: -5px;
+    margin-bottom: 15px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.total-section {
+    border-top: 1px solid var(--border-color);
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+.total-section h4 {
+    font-size: 18px;
     font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Payment Method Buttons */
+.payment-method-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.payment-option {
+    flex: 1;
+    min-width: 120px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
     cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.payment-option:hover {
+    border-color: #007bff;
+    background-color: #f0f7ff;
+}
+
+.payment-option.selected {
+    border-color: #007bff;
+    background-color: #e6f2ff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.payment-option i {
+    font-size: 24px;
+    color: #555;
+}
+
+.payment-option.selected i {
+    color: #007bff;
+}
+
+.payment-option span {
+    font-weight: 500;
+}
+
+/* Validation messages */
+.validation-message {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.validation-message.show {
+    display: block;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .payment-wrapper {
+        flex-direction: column;
+    }
+    
+    .billing-address-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+.payment-methods {
+    margin: 20px 0;
+}
+
+.payment-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.payment-option {
+    flex: 1 0 150px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-option i {
+    font-size: 24px;
+    margin-bottom: 10px;
+    display: block;
+    color: var(--text-color);
     transition: all 0.3s ease;
 }
 
-.order-summary button:hover {
-    background-color: blue;
+.payment-option span {
+    font-weight: 600;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    border-color: var(--accent-color-light);
+}
+
+.payment-option.active {
+    border-color: var(--accent-color);
+    background-color: rgba(var(--accent-color-rgb), 0.05);
+}
+
+.payment-option.active i {
+    color: var(--accent-color);
+}
+
+.payment-option.active::before {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-details {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.2);
+    outline: none;
+}
+
+.form-control.error {
+    border-color: var(--error-color);
+}
+
+.validation-message {
+    color: var(--error-color);
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.validation-message.show {
+    display: block;
+}
+
+.card-row {
+    display: flex;
+    gap: 15px;
+}
+
+.card-row .form-group {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .card-row {
+        flex-direction: column;
+    }
     
+    .payment-option {
+        flex: 1 0 100%;
+    }
+}
+
+/* Card details section - use display property instead of visibility/opacity */
+#cardDetails {
+    display: none;
+    margin-bottom: 20px;
+}
+
+/* E-wallet and cash details sections */
+#ewalletDetails, #cashDetails {
+    display: none;
+    margin-bottom: 20px;
+}
+
+/* Payment Methods */
+.payment-method-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.payment-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid var(--border-color);
+}
+
+.payment-option i {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.payment-option.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* Card Details Section */
+#cardDetails {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Make sure card details display properly when toggled */
+#cardDetails, #ewalletDetails, #cashDetails {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+#cardDetails label, #ewalletDetails label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#cardDetails input, #cardDetails select,
+#ewalletDetails select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.card-row {
+    display: flex;
+    gap: 15px;
+}
+
+.card-col {
+    flex: 1;
+}
+
+/* Validation Styling */
+.validation-message {
+    color: var(--error-color);
+    font-size: 0.8rem;
+    margin-top: -8px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.validation-message.show {
+    display: block;
+}
+
+input.error {
+    border-color: var(--error-color) !important;
+}
+
+/* E-Wallet and Cash Sections */
+.wallet-info, .cash-info {
+    background-color: var(--card-background);
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Payment Method Styling */
+.payment-method-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.payment-option {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--card-background);
+}
+
+.payment-option:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.payment-option.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px var(--accent-glow);
+    background-color: var(--input-bg);
+}
+
+.payment-option i {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Card Details Styling */
+#cardDetails, #ewalletDetails, #cashDetails {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+}
+
+.card-row {
+    display: flex;
+    gap: 15px;
+}
+
+.card-col {
+    flex: 1;
+}
+
+/* Validation Styling */
+.validation-message {
+    color: var(--error-color);
+    font-size: 0.85em;
+    margin-top: 5px;
+    display: none;
+}
+
+.validation-message.show {
+    display: block;
+}
+
+input.error {
+    border-color: var(--error-color);
 }
