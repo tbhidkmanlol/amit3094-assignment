@@ -136,14 +136,15 @@ public class AuthController extends HttpServlet {
                     }
 
                     // Create new admin user
+                    String adminUsername = request.getParameter("username");
                     User newAdmin = new User(
-                            request.getParameter("username"),
+                            adminUsername,
                             request.getParameter("password"),
                             "ADMIN"
                     );
 
                     if (userDao.createAdminAccount(newAdmin, manager)) {
-                        response.sendRedirect("../manager/dashboard.jsp?success=admin_created");
+                        response.sendRedirect("../manager/admin-created-success.jsp?adminName=" + adminUsername);
                     } else {
                         response.sendRedirect("../manager/create-admin.jsp?error=1");
                     }
