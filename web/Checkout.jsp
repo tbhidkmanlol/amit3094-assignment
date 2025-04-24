@@ -16,21 +16,17 @@
         subtotal = (Double) request.getAttribute("total");
     }
 
-    // Determine shipping option (default to nextDay if none selected)
-    String shippingOption = request.getParameter("shippingOption");
-    if (shippingOption == null || shippingOption.isEmpty()) {
-        shippingOption = "nextDay";
-    }
-
-    // Calculate shipping costs based on selection
-    if (shippingOption.equals("nextDay")) {
-        shippingSubtotal = 4.89; // 5.19 total - 0.30 SST
-    } else if (shippingOption.equals("selfCollection")) {
-        shippingSubtotal = 2.35; // 2.65 total - 0.30 SST
-    }
+    // Calculate shipping costs based on selection - defaulting to nextDay
+    shippingSubtotal = 4.89; // Default shipping cost
 
     // Calculate final total
     totalPayment = subtotal + shippingSubtotal + shippingSST;
+    
+    // Calculate delivery fee based on subtotal amount
+    double deliveryFee = (subtotal >= 1000) ? 0.0 : 25.0;
+    
+    // Update totalPayment to include delivery fee
+    totalPayment = subtotal + shippingSubtotal + shippingSST + deliveryFee;
     
     // Get user information if logged in
     User user = (User) session.getAttribute("user");
@@ -42,152 +38,26 @@
 %>
 <!DOCTYPE html>
 <html>
-    <style>
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            margin-right: 12px;
-        }
-
-        .quantity-btn {
-            width: 25px;
-            height: 25px;
-            border: 1px solid #ddd;
-            background: #f8f8f8;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .quantity-btn:hover {
-            background: #e8e8e8;
-        }
-
-        .quantity {
-            margin: 0 10px;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        .payment-btn {
-            width: 30%;
-            padding: 14px;
-            background-color: #3dd1a1;
-            color: white;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        
-        .error-field {
-            border-color: #f72585 !important;
-            box-shadow: 0 0 0 1px #f72585 !important;
-        }
-        
-        .validation-message {
-            color: #f72585;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .validation-message.show {
-            display: block;
-        }
-        
-        /* Theme toggle button */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #16213e;
-            color: #ffffff;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, background-color 0.3s;
-            z-index: 100;
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
-        
-        /* Dark theme styles */
-        html.dark-theme {
-            --bg-color: #1a1a2e;
-            --text-color: #f0f0f0;
-            --card-bg: #272640;
-            --border-color: #3a3a55;
-            --header-color: #4cc9f0;
-            --btn-bg: #4361ee;
-            --btn-text: #f0f0f0;
-        }
-    </style>
     <head>
         <title>Checkout</title>
-        <link rel="stylesheet" href="Checkout.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="Checkout.css">
     </head>
     <body>
         <!-- Theme Toggle Button -->
         <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">
-            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
         </button>
         
         <div class="checkout-container">
             <div class="checkout-left">
-                <h1 class="logo">Checkout</h1>
-
-                <div class="checkout-steps">
-                    <div class="step active">
-                        <div class="step-number">1</div>
-                        <div class="step-label">Your Cart</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-label">Details</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-label">Shipping</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="step-label">Payment</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">5</div>
-                        <div class="step-label">Complete</div>
-                    </div>
-                </div>
-
-                <div class="express-checkout">
-                    <h4>Express checkout</h4>
-                    <div class="payment-buttons">
-                        <button class="payment-button shop-pay">Shop Pay</button>
-                        <button class="payment-button google-pay">G Pay</button>
-                    </div>
-                </div>
-
-                <div class="divider">
-                    <span class="divider-text">OR</span>
-                </div>
+                <h1>Checkout</h1>
 
                 <form id="checkoutForm" action="ProcessCheckoutServlet" method="post">
-                    <h3>Contact information</h3>
+                    <h3><i class="fas fa-envelope"></i> Contact Information</h3>
                     <div class="form-group">
                         <input type="email" class="form-control" name="email" placeholder="Email" value="<%= userEmail %>" required>
                         <div class="validation-message" id="email-validation">Please enter a valid email address.</div>
@@ -198,7 +68,7 @@
                         <label for="newsletter">Email me with news and offers</label>
                     </div>
 
-                    <h3>Shipping address</h3>
+                    <h3><i class="fas fa-map-marker-alt"></i> Shipping Address</h3>
                     <div class="form-group">
                         <div class="select-wrapper">
                             <select class="form-control" name="country" required>
@@ -260,48 +130,9 @@
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <input type="text" class="form-control" name="postalCode" placeholder="Postal code" required pattern="[0-9]{5}">
+                                <input type="text" class="form-control" name="postalCode" placeholder="Postal code" required pattern="[0-9]{5}" maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 <div class="validation-message" id="postalCode-validation">Please enter a valid 5-digit postal code.</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <h3>Shipping Option</h3>
-                    <div class="shipping-option">
-                        <div class="option-card">
-                            <label class="option-content">
-                                <input type="radio" name="shippingOption" value="nextDay" required
-                                       <%= shippingOption.equals("nextDay") ? "checked" : ""%>>
-                                <div class="option-details">
-                                    <div class="option-header">
-                                        <span class="option-title">Next Day Delivery</span>
-                                        <span class="option-price">RM5.19</span>
-                                    </div>
-                                    <div class="option-description">
-                                        Guaranteed to get by 21 Apr<br>
-                                        Get a RM5.00 voucher if not attempted by 21 Apr 2025.<br>
-                                        Order before 12PM to receive the next day (excl. weekends and public holidays)
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-
-                        <div class="option-card">
-                            <label class="option-content">
-                                <input type="radio" name="shippingOption" value="selfCollection" required
-                                       <%= shippingOption.equals("selfCollection") ? "checked" : ""%>>
-                                <div class="option-details">
-                                    <div class="option-header">
-                                        <span class="option-title">Self Collection Point</span>
-                                        <span class="option-price">RM2.65</span>
-                                    </div>
-                                    <div class="option-description">
-                                        Get a RM5.00 voucher if not attempted by 21 Apr 2025.<br>
-                                        Collect your parcel from Collection Point within 7 days. For orders up to RM80.<br>
-                                        <a href="#">Select Collection Point ›</a>
-                                    </div>
-                                </div>
-                            </label>
                         </div>
                     </div>
                     
@@ -309,27 +140,18 @@
                     <input type="hidden" name="merchandiseSubtotal" value="<%= String.format("%.2f", subtotal)%>">
                     <input type="hidden" name="shippingSubtotal" value="<%= String.format("%.2f", shippingSubtotal)%>">
                     <input type="hidden" name="shippingSST" value="<%= String.format("%.2f", shippingSST)%>">
+                    <input type="hidden" name="deliveryFee" value="<%= String.format("%.2f", deliveryFee)%>">
                     <input type="hidden" name="totalPayment" value="<%= String.format("%.2f", totalPayment)%>">
+                    <input type="hidden" name="shippingOption" value="nextDay">
                     
-                    <!-- Payment Button -->
-                    <button type="submit" class="payment-btn">
-                        Payment
-                    </button>
+                    <div class="button-container">
+                        <a href="cart.jsp" class="btn-back"><i class="fas fa-arrow-left"></i> Return to cart</a>
+                    </div>
                 </form>
-
-                <div class="button-container">
-                    <a href="cart.jsp" class="btn btn-back">‹ Return to cart</a>
-                </div>
-
-                <div class="policy-links">
-                    <a href="#">Refund policy</a>
-                    <a href="#">Shipping policy</a>
-                    <a href="#">Privacy policy</a>
-                    <a href="#">Terms of service</a>
-                    <a href="#">Purchase options cancellation policy</a>
-                </div>
             </div>
             <div class="checkout-right">
+                <h3>Order Summary</h3>
+                
                 <% for (CartItem item : cart) {%>
                 <div class="cart-item" data-product-id="<%= item.getProduct().getId()%>">
                     <div class="cart-image">
@@ -355,27 +177,14 @@
                     <button class="promo-button">Apply</button>
                 </div>
 
-                <div class="summary-row">
-                    <div>Merchandise Subtotal</div>
-                    <div>RM<%= String.format("%.2f", subtotal)%></div>
+                <div class="summary-section">
+                    <div class="summary-row total">
+                        <div>Total Payment</div>
+                        <div>RM<%= String.format("%.2f", subtotal)%></div>
+                    </div>
                 </div>
 
-                <div class="summary-row">
-                    <div>Shipping Subtotal (excl. SST)</div>
-                    <div>RM<%= String.format("%.2f", shippingSubtotal)%></div>
-                </div>
-
-                <div class="summary-row">
-                    <div>Shipping Fee SST</div>
-                    <div>RM<%= String.format("%.2f", shippingSST)%></div>
-                </div>
-
-                <div class="summary-row total">
-                    <div>Total Payment</div>
-                    <div>RM<%= String.format("%.2f", totalPayment)%></div>
-                </div>
-
-                <button type="button" class="btn-continue" onclick="document.getElementById('checkoutForm').submit()">Place Order</button>
+                <button type="button" class="btn-continue" id="proceedToPaymentBtn">Proceed to Payment</button>
             </div>
         </div>
 
@@ -383,30 +192,92 @@
             // Theme toggle functionality
             const themeToggle = document.getElementById('theme-toggle');
             const themeIcon = themeToggle.querySelector('i');
+            
+            // Define theme-specific CSS variables
+            const lightThemeVars = {
+                '--text-color': '#333',
+                '--background-color': '#f5f5f5',
+                '--card-background': '#ffffff',
+                '--input-background': '#f9f9f9',
+                '--border-color': '#ddd'
+            };
+            
+            const darkThemeVars = {
+                '--text-color': '#f5f5f5',
+                '--background-color': '#121212',
+                '--card-background': '#1e1e1e',
+                '--input-background': '#2d2d2d',
+                '--border-color': '#444'
+            };
                 
             // Check if user has a previously saved theme preference
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-theme');
+            if (savedTheme === 'light') {
+                applyTheme('light');
+                themeIcon.className = 'fas fa-moon';
+            } else {
+                // Default is dark theme
+                applyTheme('dark');
                 themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
             }
             
             // Theme toggle click handler
             themeToggle.addEventListener('click', function() {
-                document.documentElement.classList.toggle('dark-theme');
+                const isLightTheme = document.documentElement.classList.contains('light-theme');
                 
-                // Update button icon
-                if (document.documentElement.classList.contains('dark-theme')) {
+                if (isLightTheme) {
+                    // Switch to dark theme
+                    applyTheme('dark');
                     themeIcon.className = 'fas fa-sun';
                     localStorage.setItem('theme', 'dark');
                 } else {
+                    // Switch to light theme
+                    applyTheme('light');
                     themeIcon.className = 'fas fa-moon';
                     localStorage.setItem('theme', 'light');
                 }
             });
             
+            // Function to apply theme without page refresh
+            function applyTheme(theme) {
+                const root = document.documentElement;
+                
+                if (theme === 'light') {
+                    document.documentElement.classList.add('light-theme');
+                    // Apply light theme variables
+                    for (const [property, value] of Object.entries(lightThemeVars)) {
+                        root.style.setProperty(property, value);
+                    }
+                } else {
+                    document.documentElement.classList.remove('light-theme');
+                    // Apply dark theme variables
+                    for (const [property, value] of Object.entries(darkThemeVars)) {
+                        root.style.setProperty(property, value);
+                    }
+                }
+            }
+            
             // Form validation
             document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+                // Prevent default form submission to handle it with our custom logic
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Only submit if validation passes
+                    this.submit();
+                }
+            });
+
+            // Add click handler for the "Proceed to Payment" button
+            document.getElementById('proceedToPaymentBtn').addEventListener('click', function() {
+                if (validateForm()) {
+                    document.getElementById('checkoutForm').submit();
+                }
+            });
+            
+            // Comprehensive form validation function
+            function validateForm() {
                 let isValid = true;
                 
                 // Reset validation
@@ -465,7 +336,6 @@
                 });
                 
                 if (!isValid) {
-                    e.preventDefault();
                     alert('Please fill in all required fields correctly before proceeding to payment.');
                     
                     // Scroll to the first error
@@ -474,8 +344,11 @@
                         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         firstError.focus();
                     }
+                    return false;
                 }
-            });
+                
+                return true;
+            }
 
             // Add click handler for return to cart button
             document.querySelector('.btn-back').addEventListener('click', function () {
@@ -537,56 +410,27 @@
                         }
                     });
 
-                    // Get shipping costs
-                    const shippingOptionEl = document.querySelector('input[name="shippingOption"]:checked');
-                    if (!shippingOptionEl)
-                        return; // Exit if shipping option not found
-
-                    const shippingOption = shippingOptionEl.value;
-                    let shippingSubtotal = 0;
+                    // For hidden fields - keep the full calculation for backend processing
+                    // Fixed costs
+                    const shippingSubtotal = 4.89;
                     const shippingSST = 0.30;
-
-                    // Set shipping subtotal based on option
-                    if (shippingOption === "nextDay") {
-                        shippingSubtotal = 4.89;
-                    } else if (shippingOption === "selfCollection") {
-                        shippingSubtotal = 2.35;
-                    }
-
-                    // Calculate total payment
-                    const totalPayment = subtotal + shippingSubtotal + shippingSST;
-
-                    // Update the display elements - Using more specific selectors to ensure correct updating
-                    const summaryRows = document.querySelectorAll('.summary-row');
-                    if (summaryRows.length >= 1) {
-                        const subtotalEl = summaryRows[0].querySelector('div:last-child');
-                        if (subtotalEl) {
-                            subtotalEl.textContent = 'RM' + subtotal.toFixed(2);
+                    const deliveryFee = (subtotal >= 1000) ? 0 : 25.0;
+                    const totalPayment = subtotal + shippingSubtotal + shippingSST + deliveryFee;
+                    
+                    // Update the total display to show only merchandise subtotal
+                    const summaryRow = document.querySelector('.summary-row.total');
+                    if (summaryRow) {
+                        const totalEl = summaryRow.querySelector('div:last-child');
+                        if (totalEl) {
+                            totalEl.textContent = 'RM' + subtotal.toFixed(2);
                         }
                     }
 
-                    if (summaryRows.length >= 2) {
-                        const shippingSubtotalEl = summaryRows[1].querySelector('div:last-child');
-                        if (shippingSubtotalEl) {
-                            shippingSubtotalEl.textContent = 'RM' + shippingSubtotal.toFixed(2);
-                        }
-                    }
-
-                    if (summaryRows.length >= 3) {
-                        const shippingSST_El = summaryRows[2].querySelector('div:last-child');
-                        if (shippingSST_El) {
-                            shippingSST_El.textContent = 'RM' + shippingSST.toFixed(2);
-                        }
-                    }
-
-                    const totalPaymentEl = document.querySelector('.summary-row.total div:last-child');
-                    if (totalPaymentEl) {
-                        totalPaymentEl.textContent = 'RM' + totalPayment.toFixed(2);
-                    }
-
-                    // Update hidden form fields
+                    // Update hidden form fields with full calculation for server
                     document.querySelector('input[name="merchandiseSubtotal"]').value = subtotal.toFixed(2);
                     document.querySelector('input[name="shippingSubtotal"]').value = shippingSubtotal.toFixed(2);
+                    document.querySelector('input[name="shippingSST"]').value = shippingSST.toFixed(2);
+                    document.querySelector('input[name="deliveryFee"]').value = deliveryFee.toFixed(2);
                     document.querySelector('input[name="totalPayment"]').value = totalPayment.toFixed(2);
                 } catch (error) {
                     console.error('Error in updateTotals:', error);
@@ -634,13 +478,6 @@
                     console.error('Error updating cart:', error);
                 });
             }
-
-            // Add listener for shipping option changes
-            document.querySelectorAll('input[name="shippingOption"]').forEach(radio => {
-                radio.addEventListener('change', function () {
-                    updateTotals();
-                });
-            });
 
             // Initialize form validation - add event listeners for real-time feedback
             const requiredInputs = document.querySelectorAll('.form-control[required]');

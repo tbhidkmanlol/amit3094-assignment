@@ -40,8 +40,8 @@
                 %>
             </a>
         </li>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact Us</a></li>
+        <li><a href="AboutUs.jsp">About Us</a></li>
+        <li><a href="contactus.jsp">Contact Us</a></li>
         
         <!-- Account Dropdown - Changes based on login status -->
         <li class="account-dropdown">

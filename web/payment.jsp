@@ -6,20 +6,11 @@
     
     // Default values
     double merchandiseSubtotal = 0.0;
-    double shippingSubtotal = 0.0;
-    double shippingSST = 0.30; // Default SST
     double totalPayment = 0.0;
-    String shippingOption = "";
     
     // Get values from request parameters if available
     if (request.getParameter("merchandiseSubtotal") != null) {
         merchandiseSubtotal = Double.parseDouble(request.getParameter("merchandiseSubtotal"));
-    }
-    if (request.getParameter("shippingSubtotal") != null) {
-        shippingSubtotal = Double.parseDouble(request.getParameter("shippingSubtotal"));
-    }
-    if (request.getParameter("shippingSST") != null) {
-        shippingSST = Double.parseDouble(request.getParameter("shippingSST"));
     }
     if (request.getParameter("totalPayment") != null) {
         totalPayment = Double.parseDouble(request.getParameter("totalPayment"));
@@ -28,8 +19,8 @@
     // Calculate delivery fee based on subtotal amount
     double deliveryFee = (merchandiseSubtotal >= 1000) ? 0.0 : 25.0;
     
-    // Update totalPayment to include the new delivery fee
-    totalPayment = merchandiseSubtotal + shippingSubtotal + shippingSST + deliveryFee;
+    // Update totalPayment to include only merchandise subtotal and delivery fee
+    totalPayment = merchandiseSubtotal + deliveryFee;
     
     // Get billing/shipping info if available
     String firstName = request.getParameter("firstName") != null ? request.getParameter("firstName") : "";
@@ -65,7 +56,7 @@
         <div class="payment-container">
             <h2>Payment Information</h2>
 
-            <form action="ProcessPaymentServlet" method="post" id="paymentForm">
+            <form action="processPayment" method="post" id="paymentForm">
                 <!-- Hidden fields to carry forward checkout data -->
                 <input type="hidden" name="firstName" value="<%= firstName %>">
                 <input type="hidden" name="lastName" value="<%= lastName %>">
@@ -76,8 +67,6 @@
                 <input type="hidden" name="postalCode" value="<%= postalCode %>">
                 <input type="hidden" name="country" value="<%= country %>">
                 <input type="hidden" name="merchandiseSubtotal" value="<%= merchandiseSubtotal %>">
-                <input type="hidden" name="shippingSubtotal" value="<%= shippingSubtotal %>">
-                <input type="hidden" name="shippingSST" value="<%= shippingSST %>">
                 <input type="hidden" name="deliveryFee" value="<%= deliveryFee %>">
                 <input type="hidden" name="totalPayment" value="<%= totalPayment %>">
 
@@ -203,20 +192,18 @@
 
             <!-- Order Summary Section -->
             <div class="summary-section">
-                <p>Merchandise Subtotal: <span>RM <%= String.format("%.2f", merchandiseSubtotal) %></span></p>
-                <p>Shipping: <span>RM <%= String.format("%.2f", shippingSubtotal) %></span></p>
-                <p>SST: <span>RM <%= String.format("%.2f", shippingSST) %></span></p>
+                <p>Merchandise Subtotal <span>RM <%= String.format("%.2f", merchandiseSubtotal) %></span></p>
                 
                 <% if (merchandiseSubtotal >= 1000) { %>
-                <p>Delivery Fee: <span class="free-delivery">FREE</span></p>
+                <p>Delivery Fee <span class="free-delivery">FREE</span></p>
                 <small class="free-delivery-note">Free delivery for orders above RM 1,000</small>
                 <% } else { %>
-                <p>Delivery Fee: <span>RM <%= String.format("%.2f", deliveryFee) %></span></p>
+                <p>Delivery Fee <span>RM <%= String.format("%.2f", deliveryFee) %></span></p>
                 <small class="delivery-note">Free delivery for orders above RM 1,000</small>
                 <% } %>
                 
                 <div class="total-section">
-                    <h4>Total: <span id="total-payment">RM <%= String.format("%.2f", totalPayment) %></span></h4>
+                    <h4>Total Payment : <span id="total-payment">RM <%= String.format("%.2f", totalPayment) %></span></h4>
                 </div>
             </div>
             
@@ -258,9 +245,6 @@
                 themeIcon.className = 'fas fa-sun'; 
                 localStorage.setItem('theme', 'dark');
             }
-            
-            // Force page refresh to ensure all styles are applied correctly
-            location.reload();
         });
     
         // Payment method selection
@@ -280,7 +264,8 @@
                 this.classList.add('active');
                 
                 // Set icon color to primary color (blue)
-                this.querySelector('i').style.color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                this.querySelector('i').style.color = primaryColor;
                 
                 // Set hidden input value
                 const method = this.dataset.method;
@@ -288,6 +273,11 @@
                 
                 // Show relevant payment details
                 togglePaymentDetails(method);
+                
+                // Force the icon color to stay blue (fix for the persistence issue)
+                setTimeout(() => {
+                    this.querySelector('i').style.color = primaryColor;
+                }, 50);
             });
         });
     

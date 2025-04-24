@@ -290,6 +290,51 @@
             font-size: 13px;
             color: var(--dark-gray);
         }
+
+        /* New styles for charts */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .chart-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .chart-panel h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media print {
+            .chart-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .chart-panel {
+                page-break-inside: avoid;
+            }
+        }
     </style>
 </head>
 <body>
@@ -384,6 +429,29 @@
             </table>
         </div>
         
+        <!-- New section for product performance charts -->
+        <div class="data-section">
+            <h2><i class="fas fa-chart-pie"></i> Product Performance</h2>
+            
+            <div class="chart-grid">
+                <!-- Top Products by Revenue Chart -->
+                <div class="chart-panel">
+                    <h3><i class="fas fa-chart-bar"></i> Top Products by Revenue</h3>
+                    <div class="chart-container">
+                        <canvas id="topProductsChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Payment Method Distribution Chart -->
+                <div class="chart-panel">
+                    <h3><i class="fas fa-credit-card"></i> Payment Method Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="paymentMethodsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="data-section">
             <h2><i class="fas fa-award"></i> TOP 10 Selling Products</h2>
             <div class="top-products">
@@ -408,5 +476,131 @@
             </div>
         </div>
     </div>
+    
+    <!-- Add Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Initialize charts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <% if (!salesData.isEmpty()) { 
+                // Get payment method data
+                Map<String, Double> paymentMethods = new HashMap<>();
+                for (SalesReport report : salesData) {
+                    String method = report.getPaymentMethod();
+                    paymentMethods.put(method, paymentMethods.getOrDefault(method, 0.0) + report.getSubtotal());
+                }
+            %>
+                // Payment Methods Pie Chart
+                const paymentCtx = document.getElementById('paymentMethodsChart').getContext('2d');
+                
+                const paymentLabels = [
+                    <% for (String method : paymentMethods.keySet()) { %>
+                        '<%= method %>',
+                    <% } %>
+                ];
+                
+                const paymentData = [
+                    <% for (Double amount : paymentMethods.values()) { %>
+                        <%= amount %>,
+                    <% } %>
+                ];
+                
+                const paymentColors = ['#4a6cf7', '#36a2eb', '#ff6384', '#ff9f40'];
+                
+                new Chart(paymentCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: paymentLabels,
+                        datasets: [{
+                            data: paymentData,
+                            backgroundColor: paymentColors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: RM ${value.toFixed(2)} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            <% } %>
+            
+            <% if (!topProducts.isEmpty()) { %>
+                // Top Products Horizontal Bar Chart
+                const productCtx = document.getElementById('topProductsChart').getContext('2d');
+                
+                const productNames = [
+                    <% for (TopProduct product : topProducts) { %>
+                        '<%= product.getProductName() %>',
+                    <% } %>
+                ];
+                
+                const productRevenues = [
+                    <% for (TopProduct product : topProducts) { %>
+                        <%= product.getTotalRevenue() %>,
+                    <% } %>
+                ];
+                
+                new Chart(productCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: productNames,
+                        datasets: [{
+                            label: 'Revenue (RM)',
+                            data: productRevenues,
+                            backgroundColor: '#4a6cf7',
+                            borderColor: '#4a6cf7',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Revenue (RM)'
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    autoSkip: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        barPercentage: 0.6
+                    }
+                });
+            <% } %>
+        });
+    </script>
 </body>
-</html> 
+</html>
