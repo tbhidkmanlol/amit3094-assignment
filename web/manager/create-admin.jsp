@@ -60,7 +60,7 @@
                 </div>
             <% } %>
 
-            <form action="../createAdmin" method="post" id="createAdminForm">
+            <form action="../auth/create-admin" method="post" id="createAdminForm">
                 <div class="cyber-input-group">
                     <i class='bx bx-user cyber-input-icon'></i>
                     <input type="text" class="cyber-input" id="username" name="username" placeholder="Username" required>

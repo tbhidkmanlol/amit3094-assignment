@@ -172,35 +172,48 @@
     const input = $(this).siblings('.quantity-input');
     let value = parseInt(input.val());
     const max = parseInt(input.attr('max'));
-    const available = parseInt($(this).closest('tr').find('.available-quantity').text());
+    const availableSpan = $(this).closest('tr').find('.available-quantity');
+    const currentAvailable = parseInt(availableSpan.text());
     
     if ($(this).hasClass('plus-btn')) {
         if (value < max) {
             input.val(value + 1);
+            availableSpan.text(currentAvailable - 1);
         } else {
-            alert(`Only ${available} items available in stock`);
+            alert(`Only ${currentAvailable} items available in stock`);
             return;
         }
     } else if ($(this).hasClass('minus-btn') && value > 1) {
         input.val(value - 1);
+        availableSpan.text(currentAvailable + 1);
     }
     
     updateTotal();
     updateCartOnServer($(this).closest('tr').data('product-id'), input.val());
 });
 
-
 $('.quantity-input').on('change', function() {
     const max = parseInt($(this).attr('max'));
     const value = parseInt($(this).val());
+    const availableSpan = $(this).closest('tr').find('.available-quantity');
+    const currentAvailable = parseInt(availableSpan.text());
+    const oldValue = parseInt($(this).data('old-value') || value);
     
     if (value > max) {
         alert(`Cannot order more than ${max} items`);
         $(this).val(max);
+        return;
     }
     
+    // 更新可用库存显示
+    const diff = oldValue - value;
+    availableSpan.text(currentAvailable + diff);
+    
+    // 保存当前值作为下一次的旧值
+    $(this).data('old-value', value);
+    
     updateTotal();
-    updateCartOnServer($(this).closest('tr').data('product-id'), $(this).val());
+    updateCartOnServer($(this).closest('tr').data('product-id'), value);
 });
 
                 // 删除商品
