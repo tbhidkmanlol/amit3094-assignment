@@ -118,8 +118,11 @@ body {
   font-family: 'Orbitron', sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
-  min-height: 100%;
+  min-height: 100vh; /* Ensure it takes at least full viewport height */
+  display: flex;
+  flex-direction: column;
   overflow-x: hidden;
+  margin: 0;
 }
 
 /* Header Section */
@@ -538,9 +541,11 @@ gap: 10px;
 .footer {
   width: 100%;
   position: relative;
-  height: auto;
+  height: auto; /* Changed from fixed height to auto */
   background-color: #1a1a1a;
   margin-top: 20px;
+  margin-bottom: 0;
+  padding-bottom: 0;
   display: flex;
   justify-content: center;
   transition: background-color 0.3s ease;
@@ -552,16 +557,27 @@ html.light-theme .footer {
 }
 
 .footer .contain {
-  width: 80%; /* Set to a percentage for better centering */
-  max-width: 1200px;
+  width: 1200px; /* Maintaining width */
+  height: auto; /* Changed from fixed height to auto */
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative; /* Added for better positioning of children */
 }
 
 .footer footer {
   text-align: center;
-  padding: 20px;
-  margin-left:20px;
+  padding: 15px 15px 0 15px;
+  margin: 0;
+  width: 100%; /* Changed to 100% instead of fixed width */
+  max-width: 1140px; /* Added max-width as a constraint */
+  height: auto; /* Changed from fixed height to auto */
+  min-height: 60px; /* Added min-height for consistency */
+  box-sizing: border-box;
+  position: relative; /* Changed from absolute to relative */
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .footer .col {

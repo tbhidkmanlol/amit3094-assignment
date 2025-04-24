@@ -125,7 +125,7 @@
 
         <!-- Showcase -->
         <section class="showcase">
-            <h1>POCKET GADGETS</h1>
+            <h1>POCKET GADGET</h1>
             <p>Welcome to Pocket gadget E-Commerce Website</p>
             <a href="ViewEvents.html" class="btn">
                 Purchase Now <i class="fas fa-chevron-right"></i>
