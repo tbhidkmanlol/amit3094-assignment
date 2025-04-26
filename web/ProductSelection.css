@@ -50,7 +50,6 @@ body {
     margin-left: 20px;
 }
 
-/* 确保这是唯一的定义 */
 .page-title {
     font-size: 2rem;
     color: var(--secondary);

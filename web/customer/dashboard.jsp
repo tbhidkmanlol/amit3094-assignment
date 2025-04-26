@@ -214,7 +214,16 @@
             background: linear-gradient(90deg, #1e90ff, #0066cc);
         }
         
-        /* 添加成功/错误提示样式 */
+        /* Success/error notification styles */
+        .notification {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
         .notice {
             padding: 15px;
             margin: 10px 0;
@@ -260,7 +269,7 @@
         boolean showOrders = "orders".equals(section);
         boolean showProfile = (section == null) || "profile".equals(section);
         
-        // 获取密码修改状态参数
+        // Get password change status parameter
         String passwordChangeStatus = request.getParameter("password_status");
     %>
     
@@ -276,19 +285,19 @@
     <div class="dashboard">
         <h1>Welcome, <%= user.getUsername() %>!</h1>
         
-        <!-- 密码修改成功或失败消息 -->
+        <!-- Password change success or failure message -->
         <% if (passwordChangeStatus != null) { %>
             <% if ("success".equals(passwordChangeStatus)) { %>
                 <div class="notice success">
-                    <i class='bx bx-check-circle'></i> 密码修改成功！
+                    <i class='bx bx-check-circle'></i> Password changed successfully!
                 </div>
             <% } else if ("error".equals(passwordChangeStatus)) { %>
                 <div class="notice error">
-                    <i class='bx bx-error-circle'></i> 密码修改失败，请确认当前密码是否正确。
+                    <i class='bx bx-error-circle'></i> Password change failed, please check if the current password is correct.
                 </div>
             <% } else if ("mismatch".equals(passwordChangeStatus)) { %>
                 <div class="notice error">
-                    <i class='bx bx-error-circle'></i> 新密码和确认密码不匹配，请重试。
+                    <i class='bx bx-error-circle'></i> New password and confirm password do not match, please try again.
                 </div>
             <% } %>
         <% } %>

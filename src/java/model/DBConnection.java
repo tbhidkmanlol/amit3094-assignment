@@ -9,17 +9,16 @@ import java.sql.DriverManager;
 
 public class DBConnection {
     public static Connection getConnection() throws Exception {
-        // 使用正确的 Derby 网络驱动
+      
         Class.forName("org.apache.derby.jdbc.ClientDriver");
-        
-        // 连接字符串
+        // link ur db here , please make it all same ( name : ass )
         String url = "jdbc:derby://localhost:1527/ass";
         String user = "nbuser";
         String password = "nbuser";
         
-        System.out.println("尝试连接数据库: " + url);  // 调试输出
+        System.out.println("Connecting to: " + url);  
         Connection conn = DriverManager.getConnection(url, user, password);
-        System.out.println("数据库连接成功！");
+        System.out.println("Database connected successfully");
         return conn;
     }
 }

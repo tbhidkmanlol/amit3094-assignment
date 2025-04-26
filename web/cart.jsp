@@ -1,13 +1,7 @@
-<%-- 
-    Document   : cart
-    Created on : Apr 15, 2025, 4:22:42 PM
-    Author     : Dell
---%>
-
 <%@ page import="java.util.*, model.Product, dao.ProductDAO, model.CartItem" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-    // 获取购物车对象，如果没有则创建一个新的购物车
+
     List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
     if (cart == null) {
         cart = new ArrayList<>();
@@ -19,7 +13,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>My Shopping Cart</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="stylesheet" href="cart.css">
     </head>
@@ -38,7 +32,7 @@
         
         <div class="container">
             <div class="header">
-                <h1><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h1>
+                <h1><i class="fas fa-shopping-cart"></i> Shopping Cart</h1>
                 <a href="CartController" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Products
                 </a>
@@ -136,11 +130,15 @@
                 if (savedTheme === 'dark') {
                     document.documentElement.classList.add('dark-theme');
                     themeIcon.className = 'fas fa-sun';
+                } else if (savedTheme === 'light') {
+                    document.documentElement.classList.add('light-theme');
+                    themeIcon.className = 'fas fa-moon';
                 }
                 
                 // Theme toggle click handler
                 themeToggle.addEventListener('click', function() {
                     document.documentElement.classList.toggle('dark-theme');
+                    document.documentElement.classList.toggle('light-theme');
                     
                     // Update button icon
                     if (document.documentElement.classList.contains('dark-theme')) {
@@ -152,7 +150,7 @@
                     }
                 });
                 
-                // 更新总价函数
+                // Function to update total price
                 function updateTotal() {
                     let subtotal = 0;
                     $('tbody tr').each(function () {
@@ -167,7 +165,7 @@
                     $('#cart-total').text('RM ' + subtotal.toFixed(2));
                 }
 
-                // 数量增减按钮
+                // Quantity increase/decrease buttons
                 $('.quantity-btn').click(function () {
     const input = $(this).siblings('.quantity-input');
     let value = parseInt(input.val());
@@ -205,19 +203,19 @@ $('.quantity-input').on('change', function() {
         return;
     }
     
-    // 更新可用库存显示
+    // Update available inventory display
     const diff = oldValue - value;
     availableSpan.text(currentAvailable + diff);
     
-    // 保存当前值作为下一次的旧值
+    // Save current value as old value for next time
     $(this).data('old-value', value);
     
     updateTotal();
     updateCartOnServer($(this).closest('tr').data('product-id'), value);
 });
 
-                // 删除商品
-                // 修改删除按钮事件处理
+                // Delete item
+                // Modify delete button event handler
                 $('.remove-btn').click(function (e) {
     e.preventDefault();
     const row = $(this).closest('tr');
@@ -250,7 +248,7 @@ $('.quantity-input').on('change', function() {
     }
 });
 
-                // 更新服务器端购物车
+                // Update cart on server
                 function updateCartOnServer(productId, quantity) {
                     $.post('UpdateCartController', {
                         productId: productId,
@@ -260,7 +258,7 @@ $('.quantity-input').on('change', function() {
                     });
                 }
 
-                // 从服务器端删除商品
+                // Remove item from server
                 function removeFromCartOnServer(productId, callback) {
                     $.post('RemoveFromCartController', {
                         productId: productId
@@ -269,7 +267,7 @@ $('.quantity-input').on('change', function() {
                     });
                 }
 
-                // 初始化总价
+                // Initialize total price
                 updateTotal();
             });
         </script>

@@ -16,14 +16,14 @@ import static model.DBConnection.getConnection;
 
 public class ProductDAO {
 
-    // 获取所有产品
+    // Get all products
     public static List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
-        System.out.println("Start Searching All Products....");  // 调试\
+        System.out.println("Start Searching All Products....");  // Debug
 
         try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM NBUSER.PRODUCT")) {
 
-            System.out.println("SQL查询执行成功");  // 调试
+            System.out.println("SQL query execution successful");  // Debug
 
             while (rs.next()) {
                 Product product = new Product();
@@ -35,18 +35,18 @@ public class ProductDAO {
                 product.setQuantity(rs.getInt("QUANTITY"));
                 products.add(product);
 
-                System.out.println("Load Product: " + product.getName());  // 调试
+                System.out.println("Load Product: " + product.getName());  // Debug
             }
         } catch (Exception e) {
             System.err.println("Error Database Checking:");
             e.printStackTrace();
         }
 
-        System.out.println("Total Searched Products: " + products.size());  // 调试
+        System.out.println("Total Searched Products: " + products.size());  // Debug
         return products;
     }
 
-    // 根据 ID 获取单个产品
+    // Get product by ID
     public static Product getProductById(int productId) {
         Product product = null;
         try {
@@ -74,7 +74,7 @@ public class ProductDAO {
         return product;
     }
 
-    // 添加新产品
+    // Add new product
     public static boolean addProduct(Product product) {
         String sql = "INSERT INTO NBUSER.PRODUCT (NAME, PRICE, QUANTITY, IMAGE, DESCRIPTION) "
                 + "VALUES (?, ?, ?, ?, ?)";
@@ -103,9 +103,9 @@ public class ProductDAO {
         return false;
     }
 
-    // 删除产品
+    // Delete product
     public static boolean deleteProduct(int productId) {
-        System.out.println("Attempting to delete product with ID: " + productId);  // 调试
+        System.out.println("Attempting to delete product with ID: " + productId);  // Debug
         boolean success = false;
 
         String sql = "DELETE FROM NBUSER.PRODUCT WHERE ID = ?";
@@ -118,9 +118,9 @@ public class ProductDAO {
             success = rowsAffected > 0;
 
             if (success) {
-                System.out.println("Product deleted successfully!");  // 调试
+                System.out.println("Product deleted successfully!");  // Debug
             } else {
-                System.out.println("No product found with ID: " + productId);  // 调试
+                System.out.println("No product found with ID: " + productId);  // Debug
             }
         } catch (Exception e) {
             System.err.println("Error deleting product:");

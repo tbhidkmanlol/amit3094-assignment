@@ -1,0 +1,57 @@
+-- Test script to populate order data
+-- Run this script to add sample orders to test sales reporting
+
+-- Insert test orders
+INSERT INTO NBUSER.ORDERS (ORDER_NUMBER, CUSTOMER_ID, ORDER_DATE, TOTAL_AMOUNT, SHIPPING_FEE, TAX_AMOUNT, 
+                          PAYMENT_METHOD, PAYMENT_STATUS, SHIPPING_STATUS, 
+                          BILLING_ADDRESS, SHIPPING_ADDRESS, CUSTOMER_EMAIL, CUSTOMER_PHONE) 
+VALUES 
+('ORD-20250422-001', 1, CURRENT_DATE - 5 DAYS, 219.80, 10.00, 13.19, 'Credit Card', 'Paid', 'Processing',
+ '123 Test Street, City', '123 Test Street, City', 'test@example.com', '555-1234'),
+('ORD-20250423-002', 2, CURRENT_DATE - 3 DAYS, 149.97, 10.00, 9.00, 'PayPal', 'Paid', 'Shipped',
+ '456 Sample Road, Town', '456 Sample Road, Town', 'customer2@example.com', '555-5678'),
+('ORD-20250424-003', 1, CURRENT_DATE - 1 DAY, 359.98, 0.00, 21.60, 'Credit Card', 'Paid', 'Processing',
+ '123 Test Street, City', '123 Test Street, City', 'test@example.com', '555-1234');
+
+-- Insert order items for the first order
+INSERT INTO NBUSER.ORDER_ITEMS (ORDER_ID, PRODUCT_ID, QUANTITY, PRICE_PER_UNIT, SUBTOTAL)
+VALUES 
+(1, 1, 2, 19.50, 39.00),  -- 2x Cable Type-C
+(1, 3, 1, 39.99, 39.99),  -- 1x Car Charger
+(1, 6, 3, 14.99, 44.97),  -- 3x Phone Case
+(1, 7, 1, 29.99, 29.99),  -- 1x Phone Holder
+(1, 10, 1, 80.00, 80.00); -- 1x Plug Extension
+
+-- Insert order items for the second order
+INSERT INTO NBUSER.ORDER_ITEMS (ORDER_ID, PRODUCT_ID, QUANTITY, PRICE_PER_UNIT, SUBTOTAL)
+VALUES
+(2, 1, 1, 19.50, 19.50),   -- 1x Cable Type-C 
+(2, 2, 2, 20.50, 41.00),   -- 2x Cable Lightning
+(2, 6, 2, 14.99, 29.98),   -- 2x Phone Case
+(2, 8, 1, 50.00, 50.00);   -- 1x Screen Protector Clear
+
+-- Insert order items for the third order
+INSERT INTO NBUSER.ORDER_ITEMS (ORDER_ID, PRODUCT_ID, QUANTITY, PRICE_PER_UNIT, SUBTOTAL)
+VALUES
+(3, 4, 1, 99.99, 99.99),    -- 1x Bluetooth Earphone
+(3, 5, 1, 279.50, 279.50);  -- 1x Bluetooth Keyboard
+
+-- Make sure the VIEW is properly created
+DROP VIEW NBUSER.TOP_PRODUCTS;
+
+CREATE VIEW NBUSER.TOP_PRODUCTS AS
+SELECT 
+    p.ID AS PRODUCT_ID,
+    p.NAME AS PRODUCT_NAME,
+    SUM(oi.QUANTITY) AS TOTAL_QUANTITY_SOLD,
+    SUM(oi.SUBTOTAL) AS TOTAL_REVENUE
+FROM 
+    NBUSER.PRODUCT p
+JOIN 
+    NBUSER.ORDER_ITEMS oi ON p.ID = oi.PRODUCT_ID
+JOIN 
+    NBUSER.ORDERS o ON oi.ORDER_ID = o.ORDER_ID
+GROUP BY 
+    p.ID, p.NAME
+ORDER BY 
+    TOTAL_QUANTITY_SOLD DESC;

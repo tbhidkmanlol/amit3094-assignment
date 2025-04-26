@@ -7,26 +7,18 @@
         cart = new ArrayList<CartItem>(); // Initialize empty cart if null
     }
     double subtotal = 0.0;
-    double shippingSST = 0.30; // Fixed SST fee
-    double shippingSubtotal = 0.0;
     double totalPayment = 0.0;
 
     // Safely get subtotal from request
     if (request.getAttribute("total") != null) {
         subtotal = (Double) request.getAttribute("total");
     }
-
-    // Calculate shipping costs based on selection - defaulting to nextDay
-    shippingSubtotal = 4.89; // Default shipping cost
-
-    // Calculate final total
-    totalPayment = subtotal + shippingSubtotal + shippingSST;
     
     // Calculate delivery fee based on subtotal amount
     double deliveryFee = (subtotal >= 1000) ? 0.0 : 25.0;
     
-    // Update totalPayment to include delivery fee
-    totalPayment = subtotal + shippingSubtotal + shippingSST + deliveryFee;
+    // Calculate final total
+    totalPayment = subtotal + deliveryFee;
     
     // Get user information if logged in
     User user = (User) session.getAttribute("user");
@@ -138,8 +130,6 @@
                     
                     <!-- Hidden fields for cart information -->
                     <input type="hidden" name="merchandiseSubtotal" value="<%= String.format("%.2f", subtotal)%>">
-                    <input type="hidden" name="shippingSubtotal" value="<%= String.format("%.2f", shippingSubtotal)%>">
-                    <input type="hidden" name="shippingSST" value="<%= String.format("%.2f", shippingSST)%>">
                     <input type="hidden" name="deliveryFee" value="<%= String.format("%.2f", deliveryFee)%>">
                     <input type="hidden" name="totalPayment" value="<%= String.format("%.2f", totalPayment)%>">
                     <input type="hidden" name="shippingOption" value="nextDay">
@@ -412,10 +402,8 @@
 
                     // For hidden fields - keep the full calculation for backend processing
                     // Fixed costs
-                    const shippingSubtotal = 4.89;
-                    const shippingSST = 0.30;
                     const deliveryFee = (subtotal >= 1000) ? 0 : 25.0;
-                    const totalPayment = subtotal + shippingSubtotal + shippingSST + deliveryFee;
+                    const totalPayment = subtotal + deliveryFee;
                     
                     // Update the total display to show only merchandise subtotal
                     const summaryRow = document.querySelector('.summary-row.total');
@@ -428,8 +416,6 @@
 
                     // Update hidden form fields with full calculation for server
                     document.querySelector('input[name="merchandiseSubtotal"]').value = subtotal.toFixed(2);
-                    document.querySelector('input[name="shippingSubtotal"]').value = shippingSubtotal.toFixed(2);
-                    document.querySelector('input[name="shippingSST"]').value = shippingSST.toFixed(2);
                     document.querySelector('input[name="deliveryFee"]').value = deliveryFee.toFixed(2);
                     document.querySelector('input[name="totalPayment"]').value = totalPayment.toFixed(2);
                 } catch (error) {

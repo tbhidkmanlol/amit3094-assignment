@@ -73,7 +73,7 @@
                         </td>
                         <td class="rating-cell">
                             <% for (int i = 1; i <= 5; i++) { %>
-                                <i class="fas fa-star<%= i > review.getRating() ? "-empty" : "" %>"></i>
+                                <i class="fas fa-star<%= i <= review.getRating() ? "" : "-empty" %>"></i>
                             <% } %>
                             <span>(<%= review.getRating() %>)</span>
                         </td>

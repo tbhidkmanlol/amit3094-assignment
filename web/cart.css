@@ -133,6 +133,7 @@ html.light-theme h1 {
 
 html.light-theme .theme-toggle {
     border-color: #ff4500;
+    color: black; 
 }
 
 .theme-toggle:hover {

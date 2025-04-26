@@ -48,8 +48,8 @@
                         %>
                     </a>
                 </li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="AboutUs.jsp">About Us</a></li>
+                <li><a href="contactus.jsp">Contact Us</a></li>
                 
                 <!-- Account Dropdown - Changes based on login status -->
                 <li class="account-dropdown">
@@ -223,15 +223,15 @@
                             <label class="form-label">Rating</label>
                             <div class="rating-select">
                                 <div class="star-rating">
-                                    <input type="radio" id="star1" name="rating" value="1" required>
+                                    <input type="radio" id="star1" name="rating" value="5" required>
                                     <label for="star1"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <input type="radio" id="star2" name="rating" value="4">
                                     <label for="star2"><i class="fas fa-star"></i></label>
                                     <input type="radio" id="star3" name="rating" value="3">
                                     <label for="star3"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <input type="radio" id="star4" name="rating" value="2">
                                     <label for="star4"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="star5" name="rating" value="5">
+                                    <input type="radio" id="star5" name="rating" value="1">
                                     <label for="star5"><i class="fas fa-star"></i></label>
                                 </div>
                                 <span id="rating-value">Select rating</span>
