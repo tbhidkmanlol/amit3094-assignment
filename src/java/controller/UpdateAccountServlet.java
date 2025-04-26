@@ -34,13 +34,13 @@ public class UpdateAccountServlet extends HttpServlet {
         // Validate request parameters
         if (currentPassword == null || newPassword == null || confirmPassword == null || 
             currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            redirectToUserDashboard(response, currentUser, "missing_data");
+            redirectToErrorPage(response, "Required data is missing");
             return;
         }
         
         // Check if new password matches confirmation
         if (!newPassword.equals(confirmPassword)) {
-            redirectToUserDashboard(response, currentUser, "password_mismatch");
+            redirectToErrorPage(response, "New password and confirmation do not match");
             return;
         }
         
@@ -50,7 +50,7 @@ public class UpdateAccountServlet extends HttpServlet {
             // Verify current password is correct
             User verifiedUser = userDAO.authenticate(currentUser.getUsername(), currentPassword);
             if (verifiedUser == null) {
-                redirectToUserDashboard(response, currentUser, "wrong_password");
+                redirectToErrorPage(response, "Current password is incorrect");
                 return;
             }
             
@@ -62,17 +62,24 @@ public class UpdateAccountServlet extends HttpServlet {
                 currentUser.setPassword(newPassword);
                 session.setAttribute("user", currentUser);
                 
-                redirectToUserDashboard(response, currentUser, "success=password_changed");
+                // 重定向到密码更改成功页面
+                response.sendRedirect(response.encodeRedirectURL("password-change-success.jsp"));
             } else {
-                redirectToUserDashboard(response, currentUser, "update_failed");
+                redirectToErrorPage(response, "Password update failed. Please try again later");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            redirectToUserDashboard(response, currentUser, "system");
+            redirectToErrorPage(response, "System error: " + e.getMessage());
         }
     }
     
-    // Helper method to redirect users to their respective dashboards with status message
+    // 重定向到错误页面的辅助方法
+    private void redirectToErrorPage(HttpServletResponse response, String errorMessage) 
+            throws IOException {
+        response.sendRedirect(response.encodeRedirectURL("password-change-error.jsp?error=" + errorMessage));
+    }
+    
+    // 以下方法保留，但不再使用
     private void redirectToUserDashboard(HttpServletResponse response, User user, String status) 
             throws IOException {
         

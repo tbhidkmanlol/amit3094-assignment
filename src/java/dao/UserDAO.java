@@ -105,7 +105,7 @@ public class UserDAO {
     
     // 5. Create staff account by manager
     public boolean createStaffAccount(String username, String password) throws SQLException, Exception {
-        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, 'ADMIN')";
+        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, 'STAFF')";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -155,7 +155,7 @@ public class UserDAO {
     // 8. Get all staff (for manager view)
     public java.util.List<User> getAllStaff() throws SQLException, Exception {
         java.util.List<User> staff = new java.util.ArrayList<>();
-        String sql = "SELECT * FROM users WHERE role = 'ADMIN'";
+        String sql = "SELECT * FROM users WHERE role = 'STAFF'";
         
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -173,8 +173,30 @@ public class UserDAO {
         }
         return staff;
     }
+
+    // 9. Get all admins (for manager view)
+    public java.util.List<User> getAllAdmins() throws SQLException, Exception {
+        java.util.List<User> admins = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role = 'ADMIN'";
+        
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                User admin = new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role")
+                );
+                admins.add(admin);
+            }
+        }
+        return admins;
+    }
     
-    // 9. Get user by ID
+    // 10. Get user by ID
     public User getUserById(int userId) throws SQLException, Exception {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -210,7 +232,7 @@ public class UserDAO {
         return null;
     }
     
-    // 10. Update customer details
+    // 11. Update customer details
     public boolean updateCustomer(User customer) throws SQLException, Exception {
         String sql = "UPDATE users SET username = ?, password = ?, customer_name = ?, contact_number = ?, email = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -227,7 +249,21 @@ public class UserDAO {
         }
     }
     
-    // 11. Delete user
+    // Update admin details
+    public boolean updateAdmin(User admin) throws SQLException, Exception {
+        String sql = "UPDATE users SET username = ?, password = ? WHERE id = ? AND role = 'ADMIN'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, admin.getUsername());
+            stmt.setString(2, admin.getPassword());
+            stmt.setInt(3, admin.getId());
+            
+            return stmt.executeUpdate() > 0;
+        }
+    }
+    
+    // 12. Delete user
     public boolean deleteUser(int userId) throws SQLException, Exception {
         String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -238,7 +274,7 @@ public class UserDAO {
         }
     }
     
-    // 12. Check if username exists
+    // 13. Check if username exists
     public boolean usernameExists(String username) throws SQLException, Exception {
         String sql = "SELECT 1 FROM users WHERE username = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -251,7 +287,22 @@ public class UserDAO {
         }
     }
     
-    // 13. Update username 
+    // 14. verify password
+     public boolean verifyPassword(int userId, String password) throws SQLException, Exception {
+        String sql = "SELECT 1 FROM users WHERE id = ? AND password = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userId);
+            stmt.setString(2, password);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+    
+    // 15. Update username 
     public boolean updateUsername(int userId, String newUsername) throws SQLException, Exception {
         String sql = "UPDATE users SET username = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
