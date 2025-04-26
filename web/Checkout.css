@@ -312,131 +312,53 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     text-decoration: none;
 }
 
-<<<<<<< Updated upstream
-        
-        .cart-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--gray);
-        }
-        
-        .cart-image {
-            position: relative;
-            margin-right: 1rem;
-        }
-        
-        .cart-image img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-        
-        .item-count {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: var(--carribean-green);
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-        }
-        
-        .cart-item-details {
-            flex: 1;
-        }
-        
-        .item-name {
-            font-size: 0.9rem;
-            color: #333;
-            margin-bottom: 0.3rem;
-            text-transform: capitalize;
-        }
-        
-        .item-type {
-            font-size: 0.8rem;
-            color: #666;
-        }
-        
-        .item-price {
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .promo-code {
-            display: flex;
-            margin: 1.5rem 0;
-        }
-        
-        .promo-input {
-            flex: 1;
-            padding: 0.8rem;
-            border: 1px solid var(--gray);
-            border-radius: 4px 0 0 4px;
-            font-family: inherit;
-        }
-        
-        .promo-button {
-            padding: 0 1rem;
-            background: var(--gray);
-            border: 1px solid var(--gray);
-            border-left: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-        }
-        
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            color: #666;
-        }
-        
-        .shipping-info {
-            display: flex;
-            align-items: center;
-        }
-        
-        .info-icon {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 1px solid #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            margin-left: 0.5rem;
-        }
-        
-        .total {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--gray);
-            font-weight: bold;
-            color: #333;
-            font-size: 1.2rem;
-        }
-        
-        .btn-continue {
-            width: 100%;
-            padding: 1rem;
-            background: var(--carribean-green);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-=======
+/* Cart Item Styling */
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gray);
+}
+
+.cart-image {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.cart-image img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.item-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.cart-item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
 .item-type {
     font-size: 14px;
     color: var(--text-color);
@@ -519,6 +441,23 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     padding: 5px 0;
     color: var(--text-color);
     opacity: 0.9;
+}
+
+.shipping-info {
+    display: flex;
+    align-items: center;
+}
+
+.info-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    margin-left: 0.5rem;
 }
 
 .summary-row.total {
@@ -605,5 +544,4 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
         justify-content: center;
     }
 }
->>>>>>> Stashed changes
 
