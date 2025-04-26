@@ -159,34 +159,69 @@ public class AuthController extends HttpServlet {
                         return;
                     }
                     
+                    String currentPassword = request.getParameter("currentPassword");
                     String newPassword = request.getParameter("newPassword");
-                    if (userDao.updatePassword(currentUser.getId(), newPassword)) {
-                        // Update session with new password
-                        currentUser.setPassword(newPassword);
-                        passwordSession.setAttribute("user", currentUser);
-                        
-                        // Redirect based on role
+                    String confirmPassword = request.getParameter("confirmPassword");
+                    
+                    // 检查确认密码是否匹配
+                    if (!newPassword.equals(confirmPassword)) {
+                        // 密码不匹配错误，使用password_status参数返回
                         switch (currentUser.getRole()) {
                             case "MANAGER":
-                                response.sendRedirect("../manager/dashboard.jsp?success=password_changed");
+                                response.sendRedirect("../manager/dashboard.jsp?section=settings&password_status=mismatch");
                                 break;
                             case "ADMIN":
-                                response.sendRedirect("../admin/dashboard.jsp?success=password_changed");
+                                response.sendRedirect("../admin/dashboard.jsp?section=settings&password_status=mismatch");
                                 break;
                             default:
-                                response.sendRedirect("../customer/dashboard.jsp?success=password_changed");
+                                response.sendRedirect("../customer/dashboard.jsp?section=settings&password_status=mismatch");
+                        }
+                        return;
+                    }
+                    
+                    // 验证当前密码
+                    if (userDao.verifyPassword(currentUser.getId(), currentPassword)) {
+                        // 当前密码验证成功，更新密码
+                        if (userDao.updatePassword(currentUser.getId(), newPassword)) {
+                            // 更新会话中的用户密码
+                            currentUser.setPassword(newPassword);
+                            passwordSession.setAttribute("user", currentUser);
+                            
+                            // 使用password_status参数重定向
+                            switch (currentUser.getRole()) {
+                                case "MANAGER":
+                                    response.sendRedirect("../manager/dashboard.jsp?section=settings&password_status=success");
+                                    break;
+                                case "ADMIN":
+                                    response.sendRedirect("../admin/dashboard.jsp?section=settings&password_status=success");
+                                    break;
+                                default:
+                                    response.sendRedirect("../customer/dashboard.jsp?section=settings&password_status=success");
+                            }
+                        } else {
+                            // 更新密码失败
+                            switch (currentUser.getRole()) {
+                                case "MANAGER":
+                                    response.sendRedirect("../manager/dashboard.jsp?section=settings&password_status=error");
+                                    break;
+                                case "ADMIN":
+                                    response.sendRedirect("../admin/dashboard.jsp?section=settings&password_status=error");
+                                    break;
+                                default:
+                                    response.sendRedirect("../customer/dashboard.jsp?section=settings&password_status=error");
+                            }
                         }
                     } else {
-                        // Redirect based on role with error
+                        // 当前密码验证失败
                         switch (currentUser.getRole()) {
                             case "MANAGER":
-                                response.sendRedirect("../manager/dashboard.jsp?error=password_update");
+                                response.sendRedirect("../manager/dashboard.jsp?section=settings&password_status=error");
                                 break;
                             case "ADMIN":
-                                response.sendRedirect("../admin/dashboard.jsp?error=password_update");
+                                response.sendRedirect("../admin/dashboard.jsp?section=settings&password_status=error");
                                 break;
                             default:
-                                response.sendRedirect("../customer/dashboard.jsp?error=password_update");
+                                response.sendRedirect("../customer/dashboard.jsp?section=settings&password_status=error");
                         }
                     }
                     break;

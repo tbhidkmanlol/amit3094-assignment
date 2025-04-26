@@ -213,6 +213,25 @@
         .status-shipped {
             background: linear-gradient(90deg, #1e90ff, #0066cc);
         }
+        
+        /* 添加成功/错误提示样式 */
+        .notice {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            color: white;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+        }
+        
+        .error {
+            background-color: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -240,6 +259,9 @@
         boolean showSettings = "settings".equals(section);
         boolean showOrders = "orders".equals(section);
         boolean showProfile = (section == null) || "profile".equals(section);
+        
+        // 获取密码修改状态参数
+        String passwordChangeStatus = request.getParameter("password_status");
     %>
     
     <!-- Navigation Bar -->
@@ -253,6 +275,23 @@
     
     <div class="dashboard">
         <h1>Welcome, <%= user.getUsername() %>!</h1>
+        
+        <!-- 密码修改成功或失败消息 -->
+        <% if (passwordChangeStatus != null) { %>
+            <% if ("success".equals(passwordChangeStatus)) { %>
+                <div class="notice success">
+                    <i class='bx bx-check-circle'></i> 密码修改成功！
+                </div>
+            <% } else if ("error".equals(passwordChangeStatus)) { %>
+                <div class="notice error">
+                    <i class='bx bx-error-circle'></i> 密码修改失败，请确认当前密码是否正确。
+                </div>
+            <% } else if ("mismatch".equals(passwordChangeStatus)) { %>
+                <div class="notice error">
+                    <i class='bx bx-error-circle'></i> 新密码和确认密码不匹配，请重试。
+                </div>
+            <% } %>
+        <% } %>
         
         <div class="tab-nav">
             <a href="?section=profile" class="<%= showProfile ? "active" : "" %>">My Profile</a>

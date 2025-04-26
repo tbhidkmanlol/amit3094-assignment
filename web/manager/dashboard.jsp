@@ -263,11 +263,11 @@
         // Create UserDAO instance to fetch data
         UserDAO userDAO = new UserDAO();
         List<User> customers = null;
-        List<User> staffMembers = null;
+        List<User> adminMembers = null;
         
         try {
             customers = userDAO.getAllCustomers();
-            staffMembers = userDAO.getAllStaff();
+            adminMembers = userDAO.getAllAdmins();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -276,16 +276,17 @@
         String section = request.getParameter("section");
         boolean showSettings = "settings".equals(section);
         boolean showCustomers = "customers".equals(section);
-        boolean showStaff = "staff".equals(section);
         boolean showProducts = "products".equals(section);
         
         // Default to admin management if no section specified
         if (section == null) {
             showSettings = false;
             showCustomers = false;
-            showStaff = false;
             showProducts = false;
         }
+
+        // Password change status parameter
+        String passwordChangeStatus = request.getParameter("password_status");
     %>
     
     <!-- Navigation Bar -->
@@ -328,24 +329,77 @@
                 <i class='bx bx-error-circle'></i> <%= errorMessage %>
             </div>
         <% } %>
+
+        <!-- Password change success or failure message -->
+        <% if (passwordChangeStatus != null) { %>
+            <% if ("success".equals(passwordChangeStatus)) { %>
+                <div class="notice success">
+                    <i class='bx bx-check-circle'></i> Password changed successfully!
+                </div>
+            <% } else if ("error".equals(passwordChangeStatus)) { %>
+                <div class="notice error">
+                    <i class='bx bx-error-circle'></i> Password change failed. Please verify your current password.
+                </div>
+            <% } else if ("mismatch".equals(passwordChangeStatus)) { %>
+                <div class="notice error">
+                    <i class='bx bx-error-circle'></i> New password and confirmation do not match. Please try again.
+                </div>
+            <% } %>
+        <% } %>
         
         <!-- Navigation Tabs -->
         <div class="tab-nav">
-            <a href="dashboard.jsp" class="<%= !showSettings && !showCustomers && !showStaff && !showProducts ? "active" : "" %>">Admin Management</a>
+            <a href="dashboard.jsp" class="<%= !showSettings && !showCustomers && !showProducts ? "active" : "" %>">Admin Management</a>
             <a href="?section=customers" class="<%= showCustomers ? "active" : "" %>">Customer Management</a>
-            <a href="?section=staff" class="<%= showStaff ? "active" : "" %>">Staff Management</a>
             <a href="?section=products" class="<%= showProducts ? "active" : "" %>">Product Management</a>
             <a href="?section=settings" class="<%= showSettings ? "active" : "" %>">Settings</a>
         </div>
         
         <!-- Admin Management Section -->
-        <div class="tab-content <%= !showSettings && !showCustomers && !showStaff && !showProducts ? "active" : "" %>" id="admin-management">
+        <div class="tab-content <%= !showSettings && !showCustomers && !showProducts ? "active" : "" %>" id="admin-management">
             <div class="dashboard-section">
                 <h3>Admin Management</h3>
                 <p>Create and manage admin accounts for your e-commerce platform.</p>
-                <a href="create-admin.jsp" class="btn"><i class='bx bx-user-plus'></i> Create New Admin Account</a>
-                <a href="../AdminReviews.jsp" class="btn"><i class='bx bx-star'></i> Manage Reviews</a>
-                <a href="sales-report.jsp" class="btn"><i class='bx bx-chart'></i> Sales Reports</a>
+                <div class="action-buttons" style="margin-bottom: 20px;">
+                    <a href="create-admin.jsp" class="btn"><i class='bx bx-user-plus'></i> Create New Admin Account</a>
+                    <a href="../AdminReviews.jsp" class="btn"><i class='bx bx-star'></i> Manage Reviews</a>
+                    <a href="sales-report.jsp" class="btn"><i class='bx bx-chart'></i> Sales Reports</a>
+                </div>
+                
+                <!-- Admin Accounts Table -->
+                <h4 style="margin-top: 30px;">Admin Accounts</h4>
+                <% if (adminMembers != null && !adminMembers.isEmpty()) { %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (User admin : adminMembers) { %>
+                                <tr>
+                                    <td><%= admin.getId() %></td>
+                                    <td><%= admin.getUsername() %></td>
+                                    <td><%= admin.getRole() %></td>
+                                    <td class="action-buttons">
+                                        <button class="edit-btn" onclick="openEditAdminModal(<%= admin.getId() %>, '<%= admin.getUsername() %>')">
+                                            <i class='bx bx-edit'></i> Edit
+                                        </button>
+                                        <form method="post" action="../deleteUser" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this administrator?');">
+                                            <input type="hidden" name="userId" value="<%= admin.getId() %>">
+                                            <button type="submit" class="delete-btn"><i class='bx bx-trash'></i> Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <p>No admin accounts found in the system.</p>
+                <% } %>
             </div>
         </div>
         
@@ -391,49 +445,6 @@
                 <% } else { %>
                     <p>No customers found in the system.</p>
                 <% } %>
-            </div>
-        </div>
-        
-        <!-- Staff Management Section -->
-        <div class="tab-content <%= showStaff ? "active" : "" %>" id="staff-management">
-            <div class="dashboard-section">
-                <h3>Staff Management</h3>
-                <p>View, edit, and manage staff accounts.</p>
-                
-                <% if (staffMembers != null && !staffMembers.isEmpty()) { %>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% for (User staff : staffMembers) { %>
-                                <tr>
-                                    <td><%= staff.getId() %></td>
-                                    <td><%= staff.getUsername() %></td>
-                                    <td><%= staff.getRole() %></td>
-                                    <td class="action-buttons">
-                                        <button class="edit-btn" onclick="openEditStaffModal(<%= staff.getId() %>, '<%= staff.getUsername() %>')">
-                                            <i class='bx bx-edit'></i> Edit
-                                        </button>
-                                        <form method="post" action="../deleteUser" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this staff member?');">
-                                            <input type="hidden" name="userId" value="<%= staff.getId() %>">
-                                            <button type="submit" class="delete-btn"><i class='bx bx-trash'></i> Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                <% } else { %>
-                    <p>No staff members found in the system.</p>
-                <% } %>
-                
-                <button class="btn" onclick="openNewStaffModal()"><i class='bx bx-user-plus'></i> Add New Staff</button>
             </div>
         </div>
         
@@ -505,45 +516,22 @@
         </div>
     </div>
     
-    <!-- Edit Staff Modal -->
-    <div id="editStaffModal" class="modal">
+    <!-- Edit Admin Modal -->
+    <div id="editAdminModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeEditStaffModal()">&times;</span>
-            <h3>Edit Staff Member</h3>
-            <form action="../updateStaff" method="post" id="editStaffForm">
-                <input type="hidden" id="editStaffId" name="staffId">
+            <span class="close" onclick="closeEditAdminModal()">&times;</span>
+            <h3>Edit Administrator</h3>
+            <form action="../updateAdmin" method="post" id="editAdminForm">
+                <input type="hidden" id="editAdminId" name="adminId">
                 <div class="form-group">
-                    <label for="editStaffUsername">Username</label>
-                    <input type="text" id="editStaffUsername" name="username" required>
+                    <label for="editAdminUsername">Username</label>
+                    <input type="text" id="editAdminUsername" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="editStaffPassword">New Password (leave blank to keep current)</label>
-                    <input type="password" id="editStaffPassword" name="password">
+                    <label for="editAdminPassword">New Password (leave blank to keep current)</label>
+                    <input type="password" id="editAdminPassword" name="password">
                 </div>
                 <button type="submit" class="btn"><i class='bx bx-save'></i> Save Changes</button>
-            </form>
-        </div>
-    </div>
-    
-    <!-- New Staff Modal -->
-    <div id="newStaffModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeNewStaffModal()">&times;</span>
-            <h3>Add New Staff Member</h3>
-            <form action="../createStaff" method="post" id="newStaffForm">
-                <div class="form-group">
-                    <label for="newStaffUsername">Username</label>
-                    <input type="text" id="newStaffUsername" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="newStaffPassword">Password</label>
-                    <input type="password" id="newStaffPassword" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="newStaffConfirmPassword">Confirm Password</label>
-                    <input type="password" id="newStaffConfirmPassword" name="confirmPassword" required>
-                </div>
-                <button type="submit" class="btn"><i class='bx bx-user-plus'></i> Add Staff</button>
             </form>
         </div>
     </div>
@@ -556,17 +544,6 @@
             
             if (newPassword && newPassword !== confirmPassword) {
                 alert('New password and confirmation do not match!');
-                event.preventDefault();
-            }
-        });
-        
-        // For the New Staff form
-        document.getElementById('newStaffForm').addEventListener('submit', function(event) {
-            const password = document.getElementById('newStaffPassword').value;
-            const confirmPassword = document.getElementById('newStaffConfirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
                 event.preventDefault();
             }
         });
@@ -586,46 +563,29 @@
             document.getElementById('editCustomerModal').style.display = 'none';
         }
         
-        // Staff Modal Functions
-        function openEditStaffModal(id, username) {
-            document.getElementById('editStaffId').value = id;
-            document.getElementById('editStaffUsername').value = username;
-            document.getElementById('editStaffPassword').value = '';
-            document.getElementById('editStaffModal').style.display = 'block';
+        // Admin Modal Functions
+        function openEditAdminModal(id, username) {
+            document.getElementById('editAdminId').value = id;
+            document.getElementById('editAdminUsername').value = username;
+            document.getElementById('editAdminPassword').value = '';
+            document.getElementById('editAdminModal').style.display = 'block';
         }
         
-        function closeEditStaffModal() {
-            document.getElementById('editStaffModal').style.display = 'none';
-        }
-        
-        // New Staff Modal Functions
-        function openNewStaffModal() {
-            document.getElementById('newStaffUsername').value = '';
-            document.getElementById('newStaffPassword').value = '';
-            document.getElementById('newStaffConfirmPassword').value = '';
-            document.getElementById('newStaffModal').style.display = 'block';
-        }
-        
-        function closeNewStaffModal() {
-            document.getElementById('newStaffModal').style.display = 'none';
+        function closeEditAdminModal() {
+            document.getElementById('editAdminModal').style.display = 'none';
         }
         
         // Close modals when clicking outside
         window.onclick = function(event) {
             const customerModal = document.getElementById('editCustomerModal');
-            const staffModal = document.getElementById('editStaffModal');
-            const newStaffModal = document.getElementById('newStaffModal');
+            const adminModal = document.getElementById('editAdminModal');
             
             if (event.target == customerModal) {
                 customerModal.style.display = 'none';
             }
             
-            if (event.target == staffModal) {
-                staffModal.style.display = 'none';
-            }
-            
-            if (event.target == newStaffModal) {
-                newStaffModal.style.display = 'none';
+            if (event.target == adminModal) {
+                adminModal.style.display = 'none';
             }
         }
     </script>
