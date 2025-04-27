@@ -1,34 +1,55 @@
-# readme work in progress
+# PocketGadget E-Commerce Platform
 
-# requirements
-- netbeans (any version that isnt too old)
-- jdk 11 (get from oracle or openlogic, either works)
-- glassfish 6.2.5
+An integrated e-commerce and inventory management system for tech gadgets and accessories, built using Java technologies.
 
-# how 2 run dis repo plz help
-1. click on code
-2. copy the url as shown in the image below
+---
 
-![image](https://i.imgur.com/ch1XeHn.png)
+## Requirements
 
-3. go on netbeans (or any ide u use idk we built this on netbeans) and navigate on team > git > clone
-4. paste the link into the repository url and select the master branch
-5. choose your own directory and clone name (doesnt really matter tho u can just leave it as is lmao)
+- **NetBeans** (any reasonably recent version)
+- **JDK 11**  
+  Get it from [Oracle](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) or [OpenLogic](https://www.openlogic.com/openjdk-downloads)
+- **GlassFish 6.2.5**
 
-# why no database/sql wtf!!!!
-![image](https://i.imgur.com/VztpoiK.png)
+---
 
-6. create a database with the following (subject to change):        
-- String url = "jdbc:derby://localhost:1527/ass";
-- String user = "nbuser";
-- String password = "nbuser";
+## How to Run
 
-![image](https://i.imgur.com/QfaJ3sf.png) 
+1. **Clone the Repository**
+   - Copy the repo URL:  
+     `https://github.com/tbhidkmanlol/amit3094-assignment.git`
+   - Open NetBeans → `Team > Git > Clone`
+   - Paste the link in the *Repository URL* field
+   - Select the **`master`** branch
+   - Choose your local directory and a project name, then click **Finish**
 
-7. once created, head over to files (press ctrl+2 if its not appearing), expand on the file and you will see a sql file.
-8. click on sql file and make sure to set the connection to the same url shown above 
-![image](https://i.imgur.com/KNxvIHI.png) 
+2. **Set Up the Database**
+   - Create a Derby database with:
+     ```java
+     String url = "jdbc:derby://localhost:1527/ass";
+     String user = "nbuser";
+     String password = "nbuser";
+     ```
 
-9. run the sql. if it shows 4 errors its just because of drop table so you can ignore that
-10. clean and build the project and run the project.
-11. stonks
+3. **Run the SQL File**
+   - Open the **Files** tab (`Ctrl + 2` if it’s hidden)
+   - Expand the project tree and locate the `.sql` file
+   - Open it and set the connection to the above Derby database
+   - Run the SQL script  
+     *(Ignore any errors related to `DROP TABLE` – they’re harmless)*
+
+4. **Build and Run**
+   - Right-click the project → **Clean and Build**
+   - Then right-click again → **Run**
+
+---
+
+## Tech Stack
+
+- Java EE (JSP, JDBC, JPA)
+- Apache Derby
+- GlassFish 6.2.5
+- NetBeans IDE
+- HTML/CSS/JavaScript
+
+---
