@@ -152,5 +152,20 @@ ORDER BY
     TOTAL_QUANTITY_SOLD DESC; 
 
 
+-- ===============================CONTACT MESSAGE=================================================
+CREATE TABLE contact_messages (
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    message VARCHAR(1000) NOT NULL,
+    submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    is_responded BOOLEAN DEFAULT FALSE
+);
+
+
+
 
 

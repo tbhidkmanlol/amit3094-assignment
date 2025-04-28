@@ -13,9 +13,20 @@
         <servlet-class>controller.ContactUs</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>MessageStatsServlet</servlet-name>
+        <servlet-class>controller.MessageStatsServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>ContactUs</servlet-name>
         <url-pattern>/ContactUs</url-pattern>
     </servlet-mapping>
+    
+        <servlet-mapping>
+        <servlet-name>MessageStatsServlet</servlet-name>
+        <url-pattern>/MessageStatsServlet</url-pattern>
+    </servlet-mapping>
+    
 
 </web-app>
