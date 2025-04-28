@@ -1,6 +1,6 @@
 # PocketGadget E-Commerce Platform
 
-An integrated e-commerce and inventory management system for tech gadgets and accessories, built using Java technologies.
+An integrated e-commerce and inventory management system for tech gadgets and accessories for the course AMIT3094, built using Java technologies.
 
 ---
 
